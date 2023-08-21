@@ -7,19 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */; };
 		BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */; };
-		BA966FC02A92DAA400E2CABC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBF2A92DAA400E2CABC /* ContentView.swift */; };
+		BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */; };
 		BA966FC22A92DAA700E2CABC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA966FC12A92DAA700E2CABC /* Assets.xcassets */; };
 		BA966FC62A92DAA700E2CABC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA966FC52A92DAA700E2CABC /* Preview Assets.xcassets */; };
+		BADC1AB42A9303C4000BD966 /* Hollywood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BADC1AB32A9303C4000BD966 /* Hollywood.jpg */; };
+		BADC1AB82A932BAC000BD966 /* InteractiveObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BADC1AB72A932BAC000BD966 /* InteractiveObject.swift */; };
+		BADC1ABA2A932CFE000BD966 /* SingleImageImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BADC1AB92A932CFE000BD966 /* SingleImageImmersiveView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageRealityView.swift; sourceTree = "<group>"; };
 		BA966FBA2A92DAA400E2CABC /* IIIFVisionAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IIIFVisionAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IIIFVisionARApp.swift; sourceTree = "<group>"; };
-		BA966FBF2A92DAA400E2CABC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestContentView.swift; sourceTree = "<group>"; };
 		BA966FC12A92DAA700E2CABC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BA966FC32A92DAA700E2CABC /* IIIFVisionAR.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IIIFVisionAR.entitlements; sourceTree = "<group>"; };
 		BA966FC52A92DAA700E2CABC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BADC1AB32A9303C4000BD966 /* Hollywood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Hollywood.jpg; sourceTree = "<group>"; };
+		BADC1AB72A932BAC000BD966 /* InteractiveObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveObject.swift; sourceTree = "<group>"; };
+		BADC1AB92A932CFE000BD966 /* SingleImageImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageImmersiveView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +61,11 @@
 			isa = PBXGroup;
 			children = (
 				BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */,
-				BA966FBF2A92DAA400E2CABC /* ContentView.swift */,
+				BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */,
+				BADC1AB92A932CFE000BD966 /* SingleImageImmersiveView.swift */,
+				BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */,
+				BADC1AB72A932BAC000BD966 /* InteractiveObject.swift */,
+				BADC1AB32A9303C4000BD966 /* Hollywood.jpg */,
 				BA966FC12A92DAA700E2CABC /* Assets.xcassets */,
 				BA966FC32A92DAA700E2CABC /* IIIFVisionAR.entitlements */,
 				BA966FC42A92DAA700E2CABC /* Preview Content */,
@@ -129,6 +141,7 @@
 			files = (
 				BA966FC62A92DAA700E2CABC /* Preview Assets.xcassets in Resources */,
 				BA966FC22A92DAA700E2CABC /* Assets.xcassets in Resources */,
+				BADC1AB42A9303C4000BD966 /* Hollywood.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,8 +152,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA966FC02A92DAA400E2CABC /* ContentView.swift in Sources */,
+				BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */,
+				BADC1ABA2A932CFE000BD966 /* SingleImageImmersiveView.swift in Sources */,
+				BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */,
 				BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */,
+				BADC1AB82A932BAC000BD966 /* InteractiveObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,6 +290,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IIIFVisionAR/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -313,6 +330,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IIIFVisionAR/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

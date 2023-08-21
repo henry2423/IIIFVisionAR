@@ -11,7 +11,13 @@ import SwiftUI
 struct IIIFVisionARApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ManifestContentView()
         }
+        .windowStyle(.plain)
+
+        ImmersiveSpace(id: "SingleImage") {
+            SingleImageImmersiveView()
+        }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
     }
 }
