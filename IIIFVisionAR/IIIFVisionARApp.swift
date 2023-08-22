@@ -19,5 +19,10 @@ struct IIIFVisionARApp: App {
             SingleImageImmersiveView()
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
+
+        ImmersiveSpace(id: "CompoundImage") {
+            CompoundImageRealityView()
+        }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
     }
 }

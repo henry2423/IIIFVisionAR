@@ -25,7 +25,7 @@ struct ManifestContentView: View {
                 } else {
                     Button("Present IIIF in Immersive Space") {
                         Task {
-                            await openImmersiveSpace(id: "SingleImage")
+                            await openImmersiveSpace(id: "CompoundImage")
                             isImmersiveSpaceOpened = true
                         }
                     }
