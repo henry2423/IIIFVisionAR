@@ -16,16 +16,20 @@ struct CompoundImageRealityView: View {
             try! await entityObject.setImages(leftFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, rightFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!)
             // Position the object 2 meters in front of the user
             // with the bottom of the object touching the floor.
-            entityObject.position = SIMD3(0, 0, -2)
+//            entityObject.position = SIMD3(0, 0, -2)
             content.add(entityObject)
         }
         .gesture(DragGesture()
             .targetedToEntity(entityObject)
-            .onChanged { value in
-                entityObject.handleDragGesture(value)
-            }
-            .onEnded { _ in
-                entityObject.handleDragGestureEnded()
+            .onEnded { value in
+                switch SwipeDirection.detectDirection(value: value.gestureValue) {
+                case .left:
+                    entityObject.handleSwipLeftGesture(value)
+                case .right:
+                    entityObject.handleSwipRightGesture(value)
+                default:
+                    break
+                }
             }
         )
         .gesture(RotateGesture()
@@ -39,3 +43,24 @@ struct CompoundImageRealityView: View {
         )
     }
 }
+
+enum SwipeDirection: String {
+    case left, right, up, down, none
+
+    static func detectDirection(value: DragGesture.Value) -> Self {
+        if value.startLocation.x > value.location.x + 24 {
+            return .left
+        }
+        if value.startLocation.x < value.location.x - 24 {
+            return .right
+        }
+        if value.startLocation.y < value.location.y - 24 {
+            return .down
+        }
+        if value.startLocation.y > value.location.y + 24 {
+            return .up
+        }
+        return .none
+    }
+}
+

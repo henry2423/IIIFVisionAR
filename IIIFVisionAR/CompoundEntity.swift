@@ -11,29 +11,27 @@ import SwiftUI
 final class CompoundEntity: Entity {
     var leftFrontModelEntiy: ModelEntity
     var rightFrontModelEntiy: ModelEntity
+    var centerAnchorEntity: AnchorEntity
 
     required init(width: Float, height: Float) {
         let emptyMaterial = UnlitMaterial()
         leftFrontModelEntiy = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
-        leftFrontModelEntiy.position = [(-1 * width / 2), 0.001, 0]
+        leftFrontModelEntiy.position = [(-1 * width / 2), 0, 0]
 
         rightFrontModelEntiy = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
-        rightFrontModelEntiy.position = [width / 2, 0.001, 0]
+        rightFrontModelEntiy.position = [width / 2, 0, 0]
 
-        let leftFrontBounds = leftFrontModelEntiy.model!.mesh.bounds.extents
-        leftFrontModelEntiy.components.set(CollisionComponent(shapes: [.generateBox(size: leftFrontBounds)]))
-        leftFrontModelEntiy.components.set(HoverEffectComponent())
-        leftFrontModelEntiy.components.set(InputTargetComponent())
-
-        let rightFrontBounds = rightFrontModelEntiy.model!.mesh.bounds.extents
-        rightFrontModelEntiy.components.set(CollisionComponent(shapes: [.generateBox(size: rightFrontBounds)]))
-        rightFrontModelEntiy.components.set(HoverEffectComponent())
-        rightFrontModelEntiy.components.set(InputTargetComponent())
+        centerAnchorEntity = AnchorEntity()
+        centerAnchorEntity.addChild(rightFrontModelEntiy)
 
         super.init()
 
         self.addChild(leftFrontModelEntiy)
-        self.addChild(rightFrontModelEntiy)
+        self.addChild(centerAnchorEntity)
+
+        let bounds = self.visualBounds(relativeTo: nil).extents
+        self.components.set(CollisionComponent(shapes: [.generateBox(size: bounds)]))
+        self.components.set(InputTargetComponent())
     }
     
     @available(*, unavailable)
@@ -44,7 +42,6 @@ final class CompoundEntity: Entity {
     func setImages(leftFrontImageURL: URL?, rightFrontImageURL: URL?) async throws {
         var leftFrontMaterial = UnlitMaterial(color: .white)
 
-        //make the new materials: 2 at a time
         if let leftFrontImageURL {
             let resource = try await TextureResource(contentsOf: leftFrontImageURL)
             leftFrontMaterial.color.texture = .init(resource)
@@ -57,7 +54,6 @@ final class CompoundEntity: Entity {
 
         var rightFrontMaterial = UnlitMaterial(color: .white)
 
-        //make the new materials: 2 at a time
         if let rightFrontImageURL {
             let resource = try await TextureResource(contentsOf: rightFrontImageURL)
             rightFrontMaterial.color.texture = .init(resource)
@@ -86,10 +82,27 @@ final class CompoundEntity: Entity {
         self.sourceRotation = sourceRotation
         let delta = simd_quatf(angle: Float(value.rotation.radians), axis: [0, 1, 0])
         self.transform.rotation = sourceRotation * delta
+        self.centerAnchorEntity.transform.rotation = sourceRotation * delta
     }
 
     func handleRotationGestureEnded() {
         sourceRotation = nil
+    }
+
+    func handleSwipLeftGesture(_ value: EntityTargetValue<DragGesture.Value>) {
+        Task {
+//            try! await setImages(leftFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, rightFrontImageURL: nil)
+            guard centerAnchorEntity.components[RotationComponent.self] == nil else {
+                return
+            }
+            centerAnchorEntity.components.set(RotationComponent())
+        }
+    }
+
+    func handleSwipRightGesture(_ value: EntityTargetValue<DragGesture.Value>) {
+//        Task {
+//            try! await setImages(leftFrontImageURL: nil, rightFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!)
+//        }
     }
 
     private var sourcePosition: SIMD3<Float>?

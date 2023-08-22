@@ -25,4 +25,10 @@ struct IIIFVisionARApp: App {
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
     }
+
+    init() {
+        // Register all the custom components and systems that the app uses.
+        RotationComponent.registerComponent()
+        RotationSystem.registerSystem()
+    }
 }
