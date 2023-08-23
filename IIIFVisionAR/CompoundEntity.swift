@@ -150,45 +150,64 @@ final class CompoundEntity: Entity {
     }
 
     func turnToNextPage(_ value: EntityTargetValue<DragGesture.Value>) {
-        let indexToBeTurned = pageEntities.count - 2    // The middle page is the one to be turn
-
-        guard !self.pageEntities[indexToBeTurned].components.has(RotationComponent.self) else {
-            return
-        }
-
-        let rotationComponent = RotationComponent(targetAngle: .pi, axis: [0, 0, 1]) { [weak self] in
+        turnPageQueue.async { [weak self] in
             guard let self else { return }
 
-            if self.pageEntities.count > 2 {
-                let entity = self.pageEntities.removeFirst()
-                self.removeChild(entity)
-            }
-        }
+            let indexToBeTurned = pageEntities.count - 2    // The middle page is the one to be turn
 
-        self.pageEntities[indexToBeTurned].components.set(rotationComponent)
+            guard !self.pageEntities[indexToBeTurned].components.has(RotationComponent.self) else {
+                return
+            }
+
+            let semaphore = DispatchSemaphore(value: 0)
+
+            let rotationComponent = RotationComponent(targetAngle: .pi, axis: [0, 0, 1]) { [weak self] in
+                guard let self else { return }
+
+                if self.pageEntities.count > 2 {
+                    let entity = self.pageEntities.removeFirst()
+                    self.removeChild(entity)
+                }
+
+                semaphore.signal()
+            }
+
+            self.pageEntities[indexToBeTurned].components.set(rotationComponent)
+            semaphore.wait()
+        }
     }
 
     func turnToPreviousPage(_ value: EntityTargetValue<DragGesture.Value>) {
-        let indexToBeTurned = pageEntities.count - 2    // The middle page is the one to be turn
-
-        guard !self.pageEntities[indexToBeTurned].components.has(RotationComponent.self) else {
-            return
-        }
-
-        let rotationComponent = RotationComponent(targetAngle: 0, axis: [0, 0, -1]) { [weak self] in
+        turnPageQueue.async { [weak self] in
             guard let self else { return }
 
-            if self.pageEntities.count > 2 {
-                let entity = self.pageEntities.removeLast()
-                self.removeChild(entity)
-            }
-        }
+            let indexToBeTurned = pageEntities.count - 2    // The middle page is the one to be turn
 
-        self.pageEntities[indexToBeTurned].components.set(rotationComponent)
+            guard !self.pageEntities[indexToBeTurned].components.has(RotationComponent.self) else {
+                return
+            }
+
+            let semaphore = DispatchSemaphore(value: 0)
+
+            let rotationComponent = RotationComponent(targetAngle: 0, axis: [0, 0, -1]) { [weak self] in
+                guard let self else { return }
+
+                if self.pageEntities.count > 2 {
+                    let entity = self.pageEntities.removeLast()
+                    self.removeChild(entity)
+                }
+
+                semaphore.signal()
+            }
+
+            self.pageEntities[indexToBeTurned].components.set(rotationComponent)
+            semaphore.wait()
+        }
     }
 
     private var sourcePosition: SIMD3<Float>?
     private var sourceRotation: simd_quatf?
     private let imageWidth: Float
     private let imageHeight: Float
+    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")
 }

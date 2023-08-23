@@ -32,13 +32,15 @@ struct CompoundImageRealityView: View {
             .onEnded { value in
                 switch SwipeDirection.detectDirection(value: value.gestureValue) {
                 case .left:
-                    guard leftPageIndex < imageURLPages.count - 1 else {
+                    guard !isLoading, leftPageIndex < imageURLPages.count - 2 else {
                         // Reach the end of the pages (exclude the virtual page)
                         return
                     }
 
+                    leftPageIndex += 1
+
                     Task {
-                        leftPageIndex += 1
+                        isLoading = true
 
                         // Load the next page if needed
                         if leftPageIndex + 1 < imageURLPages.count {
@@ -46,15 +48,19 @@ struct CompoundImageRealityView: View {
                         }
 
                         entityObject.turnToNextPage(value)
+
+                        isLoading = false
                     }
                 case .right:
-                    guard leftPageIndex > 0 else {
+                    guard !isLoading, leftPageIndex > 0 else {
                         // Must have more than 1 page to turn back
                         return
                     }
 
+                    leftPageIndex -= 1
+
                     Task {
-                        leftPageIndex -= 1
+                        isLoading = true
 
                         // Load the previous page if needed
                         if leftPageIndex >= 0 {
@@ -63,6 +69,7 @@ struct CompoundImageRealityView: View {
 
                         entityObject.turnToPreviousPage(value)
 
+                        isLoading = false
                     }
                 default:
                     break
@@ -79,6 +86,8 @@ struct CompoundImageRealityView: View {
             }
         )
     }
+
+    @State private var isLoading: Bool = false
 }
 
 enum SwipeDirection: String {
