@@ -65,6 +65,7 @@ final class CompoundEntity: Entity {
         // Build anchor for two pages
 
         let pageAnchorEntity = AnchorEntity()
+        pageAnchorEntity.transform.rotation = simd_quatf(angle: 0, axis: [0, 0, 1])
         pageAnchorEntity.addChild(frontPageEntity)
         pageAnchorEntity.addChild(backPageEntity)
 

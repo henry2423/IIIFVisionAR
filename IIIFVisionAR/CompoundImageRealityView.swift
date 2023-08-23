@@ -10,11 +10,18 @@ import RealityKit
 
 struct CompoundImageRealityView: View {
     let entityObject = CompoundEntity(width: 2.261, height: 2.309)
-    @State private var currentPageIndex = 0
+    let imageURLPages = [
+        (nil, nil),
+        (Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!),
+        (Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!),
+        (nil, nil),
+    ]
+    @State private var leftPageIndex = 0
 
     var body: some View {
         RealityView { content in
-            try? await entityObject.addNextPage(frontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"), backImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"))
+            try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].1)
+            try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
             // Position the object 2 meters in front of the user
             // with the bottom of the object touching the floor.
 //            entityObject.position = SIMD3(0, 0, -2)
@@ -25,25 +32,37 @@ struct CompoundImageRealityView: View {
             .onEnded { value in
                 switch SwipeDirection.detectDirection(value: value.gestureValue) {
                 case .left:
+                    guard leftPageIndex < imageURLPages.count - 1 else {
+                        // Reach the end of the pages (exclude the virtual page)
+                        return
+                    }
+
                     Task {
-                        try? await entityObject.addNextPage(frontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"), backImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"))
+                        leftPageIndex += 1
+
+                        // Load the next page if needed
+                        if leftPageIndex + 1 < imageURLPages.count {
+                            try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
+                        }
 
                         entityObject.turnToNextPage(value)
-
-                        currentPageIndex += 1
                     }
                 case .right:
-                    guard currentPageIndex >= 1 else {
+                    guard leftPageIndex > 0 else {
                         // Must have more than 1 page to turn back
                         return
                     }
 
                     Task {
-                        try? await entityObject.addPreviousPage(frontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"), backImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg"))
+                        leftPageIndex -= 1
+
+                        // Load the previous page if needed
+                        if leftPageIndex >= 0 {
+                            try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].0)
+                        }
 
                         entityObject.turnToPreviousPage(value)
 
-                        currentPageIndex -= 1
                     }
                 default:
                     break
