@@ -23,9 +23,16 @@ struct ManifestContentView: View {
                         }
                     }
                 } else {
-                    Button("Present IIIF in Immersive Space") {
+                    Button("Present Single IIIF in Immersive Space") {
                         Task {
                             await openImmersiveSpace(id: "SingleImage")
+                            isImmersiveSpaceOpened = true
+                        }
+                    }
+
+                    Button("Present Compound IIIF in Immersive Space") {
+                        Task {
+                            await openImmersiveSpace(id: "CompoundImage")
                             isImmersiveSpaceOpened = true
                         }
                     }

@@ -9,11 +9,13 @@ import SwiftUI
 import RealityKit
 
 struct CompoundImageRealityView: View {
-    let entityObject = CompoundEntity(width: 2.261, height: 2.309)
+    let entityObject = CompoundEntity(width: 1.100, height: 1.418)
     let imageURLPages = [
         (nil, nil),
-        (Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!),
-        (Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!),
+        (Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!),
+        (Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!),
+        (Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!),
+        (Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!),
         (nil, nil),
     ]
     @State private var leftPageIndex = 0
@@ -59,7 +61,7 @@ struct CompoundImageRealityView: View {
                     Task {
                         // Load the previous page if needed
                         if leftPageIndex >= 0 {
-                            try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].0)
+                            try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].1)
                         }
 
                         entityObject.turnToPreviousPage(value)
@@ -104,4 +106,3 @@ enum SwipeDirection: String {
         return .none
     }
 }
-

@@ -137,7 +137,7 @@ final class CompoundEntity: Entity {
         let sourceRotation = sourceRotation ?? self.transform.rotation
         self.sourceRotation = sourceRotation
         let delta = simd_quatf(angle: Float(value.rotation.radians), axis: [0, 1, 0])
-//        self.transform.rotation = sourceRotation * delta
+        self.transform.rotation = sourceRotation * delta
         for entity in pageEntities {
             entity.transform.rotation = sourceRotation * delta
         }
