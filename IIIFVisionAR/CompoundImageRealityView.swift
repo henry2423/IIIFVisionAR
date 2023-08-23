@@ -37,11 +37,10 @@ struct CompoundImageRealityView: View {
                         return
                     }
 
+                    isLoading = true
                     leftPageIndex += 1
 
                     Task {
-                        isLoading = true
-
                         // Load the next page if needed
                         if leftPageIndex + 1 < imageURLPages.count {
                             try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
@@ -57,11 +56,10 @@ struct CompoundImageRealityView: View {
                         return
                     }
 
+                    isLoading = true
                     leftPageIndex -= 1
 
                     Task {
-                        isLoading = true
-
                         // Load the previous page if needed
                         if leftPageIndex >= 0 {
                             try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].0)

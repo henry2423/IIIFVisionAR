@@ -15,7 +15,7 @@ struct RotationComponent: Component {
     var targetAngle: Float
     var onCompleted: () -> Void
 
-    init(speed: Float = 5.0, targetAngle: Float = .pi, axis: SIMD3<Float> = [0, 0, 1], onCompleted: @escaping () -> Void) {
+    init(speed: Float = 3.0, targetAngle: Float = .pi, axis: SIMD3<Float> = [0, 0, 1], onCompleted: @escaping () -> Void) {
         self.speed = speed
         self.targetAngle = targetAngle
         self.axis = axis
@@ -33,7 +33,7 @@ struct RotationSystem: System {
         for entity in context.entities(matching: Self.query, when: .rendering) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 
-            guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.1 else {
+            guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
                 component.onCompleted()
                 entity.components.remove(RotationComponent.self)
                 return
