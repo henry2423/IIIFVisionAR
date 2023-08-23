@@ -9,25 +9,31 @@ import RealityKit
 import SwiftUI
 
 final class CompoundEntity: Entity {
-    var leftFrontModelEntiy: ModelEntity
-    var rightFrontModelEntiy: ModelEntity
-    var centerAnchorEntity: AnchorEntity
+    var pageEntities = [AnchorEntity]()
+    var imageURLs = [URL]()
 
-    required init(width: Float, height: Float) {
+    required init(width: Float, height: Float, imageURLs: [URL]) {
+        self.imageURLs = imageURLs
+
         let emptyMaterial = UnlitMaterial()
-        leftFrontModelEntiy = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
-        leftFrontModelEntiy.position = [(-1 * width / 2), 0, 0]
 
-        rightFrontModelEntiy = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
-        rightFrontModelEntiy.position = [width / 2, 0, 0]
+        let frontPageEntity = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
+        frontPageEntity.position = [width / 2, 0, 0]
+        frontPageEntity.name = "frontPageEntity"
 
-        centerAnchorEntity = AnchorEntity()
-        centerAnchorEntity.addChild(rightFrontModelEntiy)
+        let backPageEntity = ModelEntity(mesh: .generatePlane(width: width, depth: height), materials: [emptyMaterial])
+        backPageEntity.transform.rotation = simd_quatf(angle: -1 * Float.pi, axis: [0, 0, 1])
+        backPageEntity.position = [width / 2, 0, 0]
+        backPageEntity.name = "backPageEntity"
+
+        let pageAnchorEntity = AnchorEntity()
+        pageAnchorEntity.addChild(frontPageEntity)
+        pageAnchorEntity.addChild(backPageEntity)
 
         super.init()
 
-        self.addChild(leftFrontModelEntiy)
-        self.addChild(centerAnchorEntity)
+        self.pageEntities.append(pageAnchorEntity)
+        self.addChild(pageAnchorEntity)
 
         let bounds = self.visualBounds(relativeTo: nil).extents
         self.components.set(CollisionComponent(shapes: [.generateBox(size: bounds)]))
@@ -39,30 +45,37 @@ final class CompoundEntity: Entity {
         fatalError("init() has not been implemented")
     }
 
-    func setImages(leftFrontImageURL: URL?, rightFrontImageURL: URL?) async throws {
-        var leftFrontMaterial = UnlitMaterial(color: .white)
+    func setInitialPage(frontImageURL: URL?, backImageURL: URL?) async throws {
+        guard let frontPageModelEntity = pageEntities[0].findEntity(named: "frontPageEntity") as? ModelEntity,
+              let backPageModelEntity = pageEntities[0].findEntity(named: "backPageEntity") as? ModelEntity else {
+            return
+        }
 
-        if let leftFrontImageURL {
-            let resource = try await TextureResource(contentsOf: leftFrontImageURL)
-            leftFrontMaterial.color.texture = .init(resource)
+        // Set front page
+        var frontMaterial = UnlitMaterial(color: .white)
+
+        if let frontImageURL {
+            let resource = try await TextureResource(contentsOf: frontImageURL)
+            frontMaterial.color.texture = .init(resource)
         }
         else {
-            leftFrontMaterial.color.tint = .clear
+            frontMaterial.color.tint = .clear
         }
 
-        leftFrontModelEntiy.model?.materials[0] = leftFrontMaterial
+        frontPageModelEntity.model?.materials[0] = frontMaterial
 
-        var rightFrontMaterial = UnlitMaterial(color: .white)
+        // Set back page
+        var backMaterial = UnlitMaterial(color: .white)
 
-        if let rightFrontImageURL {
-            let resource = try await TextureResource(contentsOf: rightFrontImageURL)
-            rightFrontMaterial.color.texture = .init(resource)
+        if let backImageURL {
+            let resource = try await TextureResource(contentsOf: backImageURL)
+            backMaterial.color.texture = .init(resource)
         }
         else {
-            rightFrontMaterial.color.tint = .clear
+            backMaterial.color.tint = .clear
         }
 
-        rightFrontModelEntiy.model?.materials[0] = rightFrontMaterial
+        backPageModelEntity.model?.materials[0] = backMaterial
     }
 
     func handleDragGesture(_ value: EntityTargetValue<DragGesture.Value>) {
@@ -81,8 +94,10 @@ final class CompoundEntity: Entity {
         let sourceRotation = sourceRotation ?? self.transform.rotation
         self.sourceRotation = sourceRotation
         let delta = simd_quatf(angle: Float(value.rotation.radians), axis: [0, 1, 0])
-        self.transform.rotation = sourceRotation * delta
-        self.centerAnchorEntity.transform.rotation = sourceRotation * delta
+//        self.transform.rotation = sourceRotation * delta
+        for entity in pageEntities {
+            entity.transform.rotation = sourceRotation * delta
+        }
     }
 
     func handleRotationGestureEnded() {
@@ -91,18 +106,20 @@ final class CompoundEntity: Entity {
 
     func handleSwipLeftGesture(_ value: EntityTargetValue<DragGesture.Value>) {
         Task {
-//            try! await setImages(leftFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!, rightFrontImageURL: nil)
-            guard centerAnchorEntity.components[RotationComponent.self] == nil else {
+            guard pageEntities.last!.components[RotationComponent.self] == nil else {
                 return
             }
-            centerAnchorEntity.components.set(RotationComponent())
+            pageEntities.last!.components.set(RotationComponent(axis: [0, 0, 1]))
         }
     }
 
     func handleSwipRightGesture(_ value: EntityTargetValue<DragGesture.Value>) {
-//        Task {
-//            try! await setImages(leftFrontImageURL: nil, rightFrontImageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!)
-//        }
+        Task {
+            guard pageEntities.first!.components[RotationComponent.self] == nil else {
+                return
+            }
+            pageEntities.first!.components.set(RotationComponent(targetAngle: 0, axis: [0, 0, -1]))
+        }
     }
 
     private var sourcePosition: SIMD3<Float>?
