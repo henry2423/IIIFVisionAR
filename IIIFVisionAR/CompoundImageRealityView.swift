@@ -22,9 +22,6 @@ struct CompoundImageRealityView: View {
         RealityView { content in
             try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].1)
             try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
-            // Position the object 2 meters in front of the user
-            // with the bottom of the object touching the floor.
-//            entityObject.position = SIMD3(0, 0, -2)
             content.add(entityObject)
         }
         .gesture(DragGesture()

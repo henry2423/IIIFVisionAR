@@ -9,8 +9,6 @@ import RealityKit
 import SwiftUI
 
 final class CompoundEntity: Entity {
-    var pageEntities = [AnchorEntity]()
-
     required init(width: Float, height: Float) {
         self.imageWidth = width
         self.imageHeight = height
@@ -207,6 +205,7 @@ final class CompoundEntity: Entity {
 
     private var sourcePosition: SIMD3<Float>?
     private var sourceRotation: simd_quatf?
+    private var pageEntities = [AnchorEntity]()
     private let imageWidth: Float
     private let imageHeight: Float
     private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")

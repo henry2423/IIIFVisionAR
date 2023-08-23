@@ -9,17 +9,18 @@ import SwiftUI
 import RealityKit
 
 struct SingleImageRealityView: View {
-    @State var entityObject: InteractiveObject
+    let entityObject = SingleImageEntity(width: 2.261, height: 2.309)
 
     var body: some View {
         RealityView { content in
+            try? await entityObject.setImage(imageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!)
             // Position the object 2 meters in front of the user
             // with the bottom of the object touching the floor.
-            entityObject.entity.position = SIMD3(0, 0, -2)
-            content.add(entityObject.entity)
+            entityObject.position = SIMD3(0, 0, -2)
+            content.add(entityObject)
         }
         .gesture(DragGesture()
-            .targetedToEntity(entityObject.entity)
+            .targetedToEntity(entityObject)
             .onChanged { value in
                 entityObject.handleDragGesture(value)
             }
@@ -28,7 +29,7 @@ struct SingleImageRealityView: View {
             }
         )
         .gesture(RotateGesture()
-            .targetedToEntity(entityObject.entity)
+            .targetedToEntity(entityObject)
             .onChanged { value in
                 entityObject.handleRotationGesture(value)
             }

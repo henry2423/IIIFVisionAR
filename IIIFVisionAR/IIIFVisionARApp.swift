@@ -16,7 +16,7 @@ struct IIIFVisionARApp: App {
         .windowStyle(.plain)
 
         ImmersiveSpace(id: "SingleImage") {
-            SingleImageImmersiveView()
+            SingleImageRealityView()
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
 
