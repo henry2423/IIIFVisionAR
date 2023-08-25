@@ -62,7 +62,7 @@ final class CompoundEntity: Entity {
 
         // Build anchor for two pages
 
-        let pageAnchorEntity = AnchorEntity()
+        let pageAnchorEntity = Entity()
         pageAnchorEntity.transform.rotation = simd_quatf(angle: 0, axis: [0, 0, 1])
         pageAnchorEntity.addChild(frontPageEntity)
         pageAnchorEntity.addChild(backPageEntity)
@@ -107,7 +107,7 @@ final class CompoundEntity: Entity {
 
         // Build anchor for two pages
 
-        let pageAnchorEntity = AnchorEntity()
+        let pageAnchorEntity = Entity()
         pageAnchorEntity.transform.rotation = simd_quatf(angle: 1 * Float.pi, axis: [0, 0, 1])
 
         pageAnchorEntity.addChild(frontPageEntity)
@@ -138,9 +138,6 @@ final class CompoundEntity: Entity {
         self.sourceRotation = sourceRotation
         let delta = simd_quatf(angle: Float(value.rotation.radians), axis: [0, 1, 0])
         self.transform.rotation = sourceRotation * delta
-        for entity in pageEntities {
-            entity.transform.rotation = sourceRotation * delta
-        }
     }
 
     func handleRotationGestureEnded() {
@@ -205,7 +202,7 @@ final class CompoundEntity: Entity {
 
     private var sourcePosition: SIMD3<Float>?
     private var sourceRotation: simd_quatf?
-    private var pageEntities = [AnchorEntity]()
+    private var pageEntities = [Entity]()
     private let imageWidth: Float
     private let imageHeight: Float
     private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")
