@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import ARKit
 import RealityKit
 
 struct CompoundImageRealityView: View {
     let entityObject = CompoundEntity(width: 1.100, height: 1.418)
+    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .table, minimumBounds: [0, 0]), trackingMode: .once)
+
     let imageURLPages = [
         (nil, nil),
         (Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!),
@@ -21,10 +24,12 @@ struct CompoundImageRealityView: View {
 
     var body: some View {
         RealityView { content in
+            content.add(rootEntity)
+
+            // Load object on the anchorEntity
             try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].1)
             try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
-            entityObject.position = SIMD3(0, 0, -1)
-            content.add(entityObject)
+            rootEntity.addChild(entityObject)
         }
         .gesture(TapGesture(count: 2)
             .targetedToAnyEntity()
@@ -121,68 +126,5 @@ enum SwipeDirection: String {
             return .up
         }
         return .none
-    }
-}
-
-
-extension View {
-    /// Listens for gestures and places an item based on those inputs.
-    func placementGestures(
-        initialPosition: Point3D = .zero
-    ) -> some View {
-        self.modifier(
-            PlacementGesturesModifier(
-                initialPosition: initialPosition
-            )
-        )
-    }
-}
-
-/// A modifier that adds gestures and positioning to a view.
-private struct PlacementGesturesModifier: ViewModifier {
-    var initialPosition: Point3D
-
-    @State private var scale: Double = 1
-    @State private var startScale: Double? = nil
-    @State private var position: Point3D = .zero
-    @State private var startPosition: Point3D? = nil
-
-    func body(content: Content) -> some View {
-        content
-            .onAppear {
-                position = initialPosition
-            }
-            .scaleEffect(scale)
-            .position(x: position.x, y: position.y)
-            .offset(z: position.z)
-
-            // Enable people to move the model anywhere in their space.
-            .simultaneousGesture(DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
-                .onChanged { value in
-                    if let startPosition {
-                        let delta = value.location3D - value.startLocation3D
-                        position = startPosition + delta
-                    } else {
-                        startPosition = position
-                    }
-                }
-                .onEnded { _ in
-                    startPosition = nil
-                }
-            )
-
-            // Enable people to scale the model within certain bounds.
-            .simultaneousGesture(MagnifyGesture()
-                .onChanged { value in
-                    if let startScale {
-                        scale = max(0.1, min(3, value.magnification * startScale))
-                    } else {
-                        startScale = scale
-                    }
-                }
-                .onEnded { value in
-                    startScale = scale
-                }
-            )
     }
 }
