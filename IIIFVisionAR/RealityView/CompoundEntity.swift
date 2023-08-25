@@ -31,93 +31,37 @@ final class CompoundEntity: Entity {
     }
 
     func addNextPage(frontImageURL: URL?, backImageURL: URL?) async throws {
-        // Set front page
-        var frontMaterial = UnlitMaterial(color: .white)
+        let (frontPageEntity, backPageEntity) = try await buildPage(frontImageURL: frontImageURL, backImageURL: backImageURL)
 
-        if let frontImageURL {
-            let resource = try await TextureResource(contentsOf: frontImageURL)
-            frontMaterial.color.texture = .init(resource)
-        }
-        else {
-            frontMaterial.color.tint = .clear
-        }
-
-        let frontPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [frontMaterial])
-        frontPageEntity.position = [imageWidth / 2, 0, 0]
-
-        // Set back page
-        var backMaterial = UnlitMaterial(color: .white)
-
-        if let backImageURL {
-            let resource = try await TextureResource(contentsOf: backImageURL)
-            backMaterial.color.texture = .init(resource)
-        }
-        else {
-            backMaterial.color.tint = .clear
-        }
-
-        let backPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [backMaterial])
-        backPageEntity.transform.rotation = simd_quatf(angle: -1 * Float.pi, axis: [0, 0, 1])
-        backPageEntity.position = [imageWidth / 2, 0, 0]
-
-        // Build anchor for two pages
-
-        let pageAnchorEntity = Entity()
-        pageAnchorEntity.transform.rotation = simd_quatf(angle: 0, axis: [0, 0, 1])
-        pageAnchorEntity.addChild(frontPageEntity)
-        pageAnchorEntity.addChild(backPageEntity)
+        // Build rootEntity for two pages
+        let pageRootEntity = Entity()
+        pageRootEntity.transform.rotation = simd_quatf(angle: 0, axis: [0, 0, 1])
+        pageRootEntity.addChild(frontPageEntity)
+        pageRootEntity.addChild(backPageEntity)
 
         // Add front+back page into array
-        self.pageEntities.append(pageAnchorEntity)
+        self.pageEntities.append(pageRootEntity)
 
         // Add to the Entity
-        self.addChild(pageAnchorEntity)
+        self.addChild(pageRootEntity)
         updateCollisionShape()
     }
 
     func addPreviousPage(frontImageURL: URL?, backImageURL: URL?) async throws {
-        // Set front page
-        var frontMaterial = UnlitMaterial(color: .white)
+        let (frontPageEntity, backPageEntity) = try await buildPage(frontImageURL: frontImageURL, backImageURL: backImageURL)
 
-        if let frontImageURL {
-            let resource = try await TextureResource(contentsOf: frontImageURL)
-            frontMaterial.color.texture = .init(resource)
-        }
-        else {
-            frontMaterial.color.tint = .clear
-        }
+        // Build rootEntity for two pages
+        let pageRootEntity = Entity()
+        pageRootEntity.transform.rotation = simd_quatf(angle: 1 * Float.pi, axis: [0, 0, 1])
 
-        let frontPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [frontMaterial])
-        frontPageEntity.position = [imageWidth / 2, 0, 0]
-
-        // Set back page
-        var backMaterial = UnlitMaterial(color: .white)
-
-        if let backImageURL {
-            let resource = try await TextureResource(contentsOf: backImageURL)
-            backMaterial.color.texture = .init(resource)
-        }
-        else {
-            backMaterial.color.tint = .clear
-        }
-
-        let backPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [backMaterial])
-        backPageEntity.transform.rotation = simd_quatf(angle: -1 * Float.pi, axis: [0, 0, 1])
-        backPageEntity.position = [imageWidth / 2, 0, 0]
-
-        // Build anchor for two pages
-
-        let pageAnchorEntity = Entity()
-        pageAnchorEntity.transform.rotation = simd_quatf(angle: 1 * Float.pi, axis: [0, 0, 1])
-
-        pageAnchorEntity.addChild(frontPageEntity)
-        pageAnchorEntity.addChild(backPageEntity)
+        pageRootEntity.addChild(frontPageEntity)
+        pageRootEntity.addChild(backPageEntity)
 
         // Add front+back page into array
-        self.pageEntities.insert(pageAnchorEntity, at: 0)
+        self.pageEntities.insert(pageRootEntity, at: 0)
 
         // Add to the Entity
-        self.addChild(pageAnchorEntity)
+        self.addChild(pageRootEntity)
         updateCollisionShape()
     }
 
@@ -198,6 +142,39 @@ final class CompoundEntity: Entity {
             self.pageEntities[indexToBeTurned].components.set(rotationComponent)
             semaphore.wait()
         }
+    }
+
+    private func buildPage(frontImageURL: URL?, backImageURL: URL?) async throws -> (ModelEntity, ModelEntity) {
+        // Set front page
+        var frontMaterial = UnlitMaterial(color: .white)
+
+        if let frontImageURL {
+            let resource = try await TextureResource(contentsOf: frontImageURL)
+            frontMaterial.color.texture = .init(resource)
+        }
+        else {
+            frontMaterial.color.tint = .clear
+        }
+
+        let frontPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [frontMaterial])
+        frontPageEntity.position = [imageWidth / 2, 0, 0]
+
+        // Set back page
+        var backMaterial = UnlitMaterial(color: .white)
+
+        if let backImageURL {
+            let resource = try await TextureResource(contentsOf: backImageURL)
+            backMaterial.color.texture = .init(resource)
+        }
+        else {
+            backMaterial.color.tint = .clear
+        }
+
+        let backPageEntity = ModelEntity(mesh: .generatePlane(width: imageWidth, depth: imageHeight), materials: [backMaterial])
+        backPageEntity.transform.rotation = simd_quatf(angle: -1 * Float.pi, axis: [0, 0, 1])
+        backPageEntity.position = [imageWidth / 2, 0, 0]
+
+        return (frontPageEntity, backPageEntity)
     }
 
     private var sourcePosition: SIMD3<Float>?
