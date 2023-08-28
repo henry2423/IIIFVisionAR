@@ -33,7 +33,7 @@ struct RotationSystem: System {
         for entity in context.entities(matching: Self.query, when: .rendering) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 
-            guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.03 else {
+            guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
                 component.onCompleted()
                 entity.components.remove(RotationComponent.self)
                 return
