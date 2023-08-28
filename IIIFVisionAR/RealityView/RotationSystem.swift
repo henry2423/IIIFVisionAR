@@ -34,12 +34,13 @@ struct RotationSystem: System {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 
             guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
+                entity.transform.rotation = .init(angle: component.targetAngle, axis: entity.orientation.axis) // Set to the targetAngle
                 component.onCompleted()
                 entity.components.remove(RotationComponent.self)
                 return
             }
 
-            entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
+            entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: nil)
         }
     }
 }

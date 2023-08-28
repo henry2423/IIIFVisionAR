@@ -64,7 +64,7 @@ struct CompoundImageRealityView: View {
                                 try? await entityObject.addNextPage(frontImageURL: imageURLPages[leftPageIndex + 1].0, backImageURL: imageURLPages[leftPageIndex + 1].1)
                             }
 
-                            entityObject.turnToNextPage(value)
+                            entityObject.turnToNextPage(value, pageNumber: leftPageIndex)
 
                             isLoading = false
                         }
@@ -83,7 +83,7 @@ struct CompoundImageRealityView: View {
                                 try? await entityObject.addPreviousPage(frontImageURL: imageURLPages[leftPageIndex].0, backImageURL: imageURLPages[leftPageIndex].1)
                             }
 
-                            entityObject.turnToPreviousPage(value)
+                            entityObject.turnToPreviousPage(value, pageNumber: leftPageIndex)
 
                             isLoading = false
                         }
