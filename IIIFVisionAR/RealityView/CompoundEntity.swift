@@ -80,7 +80,7 @@ final class CompoundEntity: Entity {
     func handleRotationGesture(_ value: EntityTargetValue<RotateGesture.Value>) {
         let sourceRotation = sourceRotation ?? self.transform.rotation
         self.sourceRotation = sourceRotation
-        let delta = simd_quatf(angle: Float(value.rotation.radians), axis: [0, 1, 0])
+        let delta = simd_quatf(angle: -Float(value.rotation.radians), axis: [0, 1, 0])
         self.transform.rotation = sourceRotation * delta
     }
 
