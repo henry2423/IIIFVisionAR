@@ -113,16 +113,16 @@ enum SwipeDirection: String {
     case left, right, up, down, none
 
     static func detectDirection(value: DragGesture.Value) -> Self {
-        if value.startLocation.x > value.location.x + 24 {
+        if value.startLocation3D.x > value.location3D.x + 24 {
             return .left
         }
-        if value.startLocation.x < value.location.x - 24 {
+        if value.startLocation3D.x < value.location3D.x - 24 {
             return .right
         }
-        if value.startLocation.y < value.location.y - 24 {
+        if value.startLocation3D.y < value.location3D.y - 24 {
             return .down
         }
-        if value.startLocation.y > value.location.y + 24 {
+        if value.startLocation3D.y > value.location3D.y + 24 {
             return .up
         }
         return .none
