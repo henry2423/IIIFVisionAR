@@ -30,7 +30,7 @@ struct RotationSystem: System {
     init(scene: RealityKit.Scene) {}
 
     func update(context: SceneUpdateContext) {
-        for entity in context.entities(matching: Self.query, when: .rendering) {
+        for entity in context.scene.performQuery(Self.query) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 
             guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
@@ -40,7 +40,7 @@ struct RotationSystem: System {
                 return
             }
 
-            entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: nil)
+            entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
         }
     }
 }
