@@ -99,7 +99,7 @@ final class CompoundEntity: Entity {
             }
 
             let semaphore = DispatchSemaphore(value: 0)
-            let rotationComponent = RotationComponent(targetAngle: .pi - Float(pageNumber) * 0.02, axis: [0, 0, 1]) { [weak self] in
+            let rotationComponent = RotationComponent(targetAngle: .pi - Float(pageNumber) * 0.015, axis: [0, 0, 1]) { [weak self] in
                 guard let self else { return }
 
                 if self.pageEntities.count > 2 {
@@ -126,7 +126,7 @@ final class CompoundEntity: Entity {
             }
 
             let semaphore = DispatchSemaphore(value: 0)
-            let rotationComponent = RotationComponent(targetAngle: 0 + Float(pageNumber) * 0.02, axis: [0, 0, -1]) { [weak self] in
+            let rotationComponent = RotationComponent(targetAngle: 0 + Float(pageNumber) * 0.015, axis: [0, 0, -1]) { [weak self] in
                 guard let self else { return }
 
                 if self.pageEntities.count > 2 {

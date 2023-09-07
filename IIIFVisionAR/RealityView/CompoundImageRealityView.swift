@@ -11,7 +11,7 @@ import RealityKit
 
 struct CompoundImageRealityView: View {
     let entityObject = CompoundEntity(width: 1.100, height: 1.418)
-    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .table, minimumBounds: [0, 0]), trackingMode: .once)
+    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .continuous)
 
     let imageURLPages = [
         (nil, nil),

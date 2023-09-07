@@ -10,14 +10,14 @@ import RealityKit
 
 struct SingleImageRealityView: View {
     let entityObject = SingleImageEntity(width: 2.261, height: 2.309)
+    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .once)
 
     var body: some View {
         RealityView { content in
+            content.add(rootEntity)
+            
             try? await entityObject.setImage(imageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!)
-            // Position the object 2 meters in front of the user
-            // with the bottom of the object touching the floor.
-            entityObject.position = SIMD3(0, 0, -2)
-            content.add(entityObject)
+            rootEntity.addChild(entityObject)
         }
         .gesture(DragGesture()
             .targetedToEntity(entityObject)
