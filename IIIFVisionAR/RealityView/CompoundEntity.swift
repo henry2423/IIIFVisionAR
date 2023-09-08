@@ -102,7 +102,7 @@ final class CompoundEntity: Entity {
         }
     }
 
-    func turnToNextPage(_ value: EntityTargetValue<DragGesture.Value>) {
+    func turnToNextPage() {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
@@ -149,7 +149,7 @@ final class CompoundEntity: Entity {
         }
     }
 
-    func turnToPreviousPage(_ value: EntityTargetValue<DragGesture.Value>) {
+    func turnToPreviousPage() {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
