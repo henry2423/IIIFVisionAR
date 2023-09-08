@@ -8,6 +8,32 @@
 import RealityKit
 import SwiftUI
 
+actor PageTurnState {
+    var currentRightPageIndex = 1
+
+    func updateCurrentRightPageIndex(to newValue: Int) {
+        currentRightPageIndex = newValue
+    }
+
+    func cachePageEntity(index: Int, entity: Entity) {
+        pageIndexEntityDict[index] = entity
+    }
+
+    func removePageEntity(index: Int) {
+        pageIndexEntityDict.removeValue(forKey: index)
+    }
+
+    func getPageEntity(index: Int) -> Entity? {
+        pageIndexEntityDict[index]
+    }
+
+    func allPageIndexPairs() -> [Int: Entity] {
+        pageIndexEntityDict
+    }
+
+    private var pageIndexEntityDict = [Int: Entity]()  // [PageIndex: Entity]
+}
+
 final class CompoundEntity: Entity {
 
     required init(width: Float, height: Float, imageURLPairs: [(URL?, URL?)]) {
@@ -33,16 +59,16 @@ final class CompoundEntity: Entity {
     }
 
     func loadInitialPages() async throws {
-        currentRightPageIndex = 1
+        await pageTurnState.updateCurrentRightPageIndex(to: 1)
 
         // Load the left side (ideally nil images)
-        try? await addPreviousPage(frontImageURL: imageURLPairs[currentRightPageIndex - 1].0,
-                                   backImageURL: imageURLPairs[currentRightPageIndex - 1].1, 
+        try? await addPreviousPage(frontImageURL: imageURLPairs[0].0,
+                                   backImageURL: imageURLPairs[0].1,
                                    pageIndex: 0)
 
         // Load the right side
-        try? await addNextPage(frontImageURL: imageURLPairs[currentRightPageIndex].0,
-                               backImageURL: imageURLPairs[currentRightPageIndex].1,
+        try? await addNextPage(frontImageURL: imageURLPairs[1].0,
+                               backImageURL: imageURLPairs[1].1,
                                pageIndex: 1)
     }
 
@@ -52,19 +78,23 @@ final class CompoundEntity: Entity {
                 return
             }
 
-            // Check for current pageIndex
-            let pageIndex = self.currentRightPageIndex
+            Task {
+                // Check for current pageIndex
+                let pageIndex = await self.pageTurnState.currentRightPageIndex
 
-            // Remove extra page if needed if it's not presenting
-            for (key, entity) in self.pageIndexEntityDict {
-                if key != pageIndex && key != pageIndex - 1 {
-                    self.pageIndexEntityDict.removeValue(forKey: key)
-                    self.removeChild(entity)
+                // Remove extra page if needed if it's not presenting
+                let allPageIndexEntity = await self.pageTurnState.allPageIndexPairs()
+
+                for (key, entity) in allPageIndexEntity {
+                    if key != pageIndex && key != pageIndex - 1 {
+                        await self.pageTurnState.removePageEntity(index: key)
+                        self.removeChild(entity)
+                    }
                 }
-            }
 
-            // Release the lock so next turn next/previous action can start
-            self.turnPageSemaphore.signal()
+                // Release the lock so next turn next/previous action can start
+                self.turnPageSemaphore.signal()
+            }
         }
     }
 
@@ -75,21 +105,23 @@ final class CompoundEntity: Entity {
             // Lock the pageTurn action to ensure one turn at a time
             turnPageSemaphore.wait()
 
-            // Don't turn when reaching the end of the pages
-            guard self.currentRightPageIndex < self.imageURLPairs.count - 1 else {
-                self.turnPageSemaphore.signal()
-                return
-            }
-
             Task {
+                let currentRightPageIndex = await self.pageTurnState.currentRightPageIndex
+
+                // Don't turn when reaching the end of the pages
+                guard currentRightPageIndex < self.imageURLPairs.count - 1 else {
+                    self.turnPageSemaphore.signal()
+                    return
+                }
+
                 // Build the next page first
-                try? await self.addNextPage(frontImageURL: self.imageURLPairs[self.currentRightPageIndex + 1].0,
-                                            backImageURL: self.imageURLPairs[self.currentRightPageIndex + 1].1,
-                                            pageIndex: self.currentRightPageIndex + 1)
+                try? await self.addNextPage(frontImageURL: self.imageURLPairs[currentRightPageIndex + 1].0,
+                                            backImageURL: self.imageURLPairs[currentRightPageIndex + 1].1,
+                                            pageIndex: currentRightPageIndex + 1)
 
                 // Turn the right page
-                let indexToBeTurned = self.currentRightPageIndex
-                guard let entityToBeTurned = self.pageIndexEntityDict[indexToBeTurned] else {
+                let indexToBeTurned = currentRightPageIndex
+                guard let entityToBeTurned = await self.pageTurnState.getPageEntity(index: indexToBeTurned) else {
                     self.turnPageSemaphore.signal()
                     return
                 }
@@ -101,12 +133,12 @@ final class CompoundEntity: Entity {
                 }
 
                 // Rotate to the targetAngle
-                let rotationComponent = RotationComponent(targetAngle: .pi - Float(self.currentRightPageIndex) * 0.015, axis: [0, 0, 1])
+                let rotationComponent = RotationComponent(targetAngle: .pi - Float(currentRightPageIndex) * 0.015, axis: [0, 0, 1])
 
                 entityToBeTurned.components.set(rotationComponent)
 
                 // Update the currenRightPageIndex
-                self.currentRightPageIndex += 1
+                await self.pageTurnState.updateCurrentRightPageIndex(to: currentRightPageIndex + 1)
             }
         }
     }
@@ -118,21 +150,23 @@ final class CompoundEntity: Entity {
             // Lock the pageTurn action to ensure one turn at a time
             self.turnPageSemaphore.wait()
 
-            // Don't turn when reaching the start of the pages
-            guard self.currentRightPageIndex > 1 else {
-                self.turnPageSemaphore.signal()
-                return
-            }
-
             Task {
+                let currentRightPageIndex = await self.pageTurnState.currentRightPageIndex
+
+                // Don't turn when reaching the start of the pages
+                guard currentRightPageIndex > 1 else {
+                    self.turnPageSemaphore.signal()
+                    return
+                }
+
                 // Build the previous page first
-                try? await self.addPreviousPage(frontImageURL: self.imageURLPairs[self.currentRightPageIndex - 2].0,
-                                                backImageURL: self.imageURLPairs[self.currentRightPageIndex - 2].1,
-                                                pageIndex: self.currentRightPageIndex - 2)
+                try? await self.addPreviousPage(frontImageURL: self.imageURLPairs[currentRightPageIndex - 2].0,
+                                                backImageURL: self.imageURLPairs[currentRightPageIndex - 2].1,
+                                                pageIndex: currentRightPageIndex - 2)
 
                 // Turn the left page
-                let indexToBeTurned = self.currentRightPageIndex - 1
-                guard let entityToBeTurned = self.pageIndexEntityDict[indexToBeTurned] else {
+                let indexToBeTurned = currentRightPageIndex - 1
+                guard let entityToBeTurned = await self.pageTurnState.getPageEntity(index: indexToBeTurned) else {
                     self.turnPageSemaphore.signal()
                     return
                 }
@@ -144,12 +178,12 @@ final class CompoundEntity: Entity {
                 }
 
                 // Rotate to the targetAngle
-                let rotationComponent = RotationComponent(targetAngle: 0 + Float(self.currentRightPageIndex) * 0.015, axis: [0, 0, -1])
+                let rotationComponent = RotationComponent(targetAngle: 0 + Float(currentRightPageIndex) * 0.015, axis: [0, 0, -1])
 
                 entityToBeTurned.components.set(rotationComponent)
 
                 // Update the currenRightPageIndex
-                self.currentRightPageIndex -= 1
+                await self.pageTurnState.updateCurrentRightPageIndex(to: currentRightPageIndex - 1)
             }
         }
     }
@@ -168,20 +202,19 @@ final class CompoundEntity: Entity {
 
     private var sourcePosition: SIMD3<Float>?
     private var sourceRotation: simd_quatf?
-    private var pageIndexEntityDict = [Int: Entity]()  // [PageIndex: Entity]
     private let imageWidth: Float
     private let imageHeight: Float
     private let imageURLPairs: [(URL?, URL?)]
-    private var currentRightPageIndex = 1
+    private let pageTurnState = PageTurnState()
     private let turnPageSemaphore = DispatchSemaphore(value: 1) // To ensure the memory efficiency, we turn 1 page at the time
-    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue", attributes: .concurrent)
+    private let turnPageQueue = DispatchQueue(label: "turnPageQueue.IIIFVisionAR", attributes: .concurrent)
 }
 
 // MARK: - Build Entity Page from Images
 extension CompoundEntity {
     private func addNextPage(frontImageURL: URL?, backImageURL: URL?, pageIndex: Int) async throws {
         // Skip building page if it existed
-        guard pageIndexEntityDict[pageIndex] == nil else {
+        guard await pageTurnState.getPageEntity(index: pageIndex) == nil else {
             return
         }
 
@@ -195,7 +228,7 @@ extension CompoundEntity {
         pageRootEntity.name = "\(pageIndex)"
 
         // Add front+back page into array
-        pageIndexEntityDict[pageIndex] = pageRootEntity
+        await pageTurnState.cachePageEntity(index: pageIndex, entity: pageRootEntity)
 
         // Add to the Entity
         self.addChild(pageRootEntity)
@@ -204,7 +237,7 @@ extension CompoundEntity {
 
     private func addPreviousPage(frontImageURL: URL?, backImageURL: URL?, pageIndex: Int) async throws {
         // Skip building page if it existed
-        guard pageIndexEntityDict[pageIndex] == nil else {
+        guard await pageTurnState.getPageEntity(index: pageIndex) == nil else {
             return
         }
 
@@ -218,7 +251,7 @@ extension CompoundEntity {
         pageRootEntity.name = "\(pageIndex)"
 
         // Add front+back page into array
-        pageIndexEntityDict[pageIndex] = pageRootEntity
+        await pageTurnState.cachePageEntity(index: pageIndex, entity: pageRootEntity)
 
         // Add to the Entity
         self.addChild(pageRootEntity)
