@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */; };
+		BA6C01612AABA4210046A717 /* PagePairHelper .swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6C01602AABA4210046A717 /* PagePairHelper .swift */; };
 		BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */; };
 		BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */; };
 		BA966FC22A92DAA700E2CABC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA966FC12A92DAA700E2CABC /* Assets.xcassets */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageRealityView.swift; sourceTree = "<group>"; };
+		BA6C01602AABA4210046A717 /* PagePairHelper .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PagePairHelper .swift"; sourceTree = "<group>"; };
 		BA966FBA2A92DAA400E2CABC /* IIIFVisionAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IIIFVisionAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IIIFVisionARApp.swift; sourceTree = "<group>"; };
 		BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				BAD1A7D52A94777700DFDA32 /* CompoundImageRealityView.swift */,
 				BAD1A7D32A94749500DFDA32 /* CompoundEntity.swift */,
 				BAD1A7D72A947C6000DFDA32 /* RotationSystem.swift */,
+				BA6C01602AABA4210046A717 /* PagePairHelper .swift */,
 			);
 			path = RealityView;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */,
+				BA6C01612AABA4210046A717 /* PagePairHelper .swift in Sources */,
 				BAD1A7D42A94749500DFDA32 /* CompoundEntity.swift in Sources */,
 				BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */,
 				BAD1A7D82A947C6000DFDA32 /* RotationSystem.swift in Sources */,

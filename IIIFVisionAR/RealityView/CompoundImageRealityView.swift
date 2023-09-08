@@ -11,13 +11,16 @@ import RealityKit
 
 struct CompoundImageRealityView: View {
     let entityObject = CompoundEntity(width: 1.100, height: 1.418, imageURLPairs: [
-        (nil, nil),
-        (Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!),
-        (Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!),
-        (Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!),
-        (Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!, Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!),
-        (nil, nil),
-    ])
+        Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!,
+        Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!,
+    ].buildPagePairs())
+
     let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .continuous)
 
     var body: some View {
@@ -48,9 +51,9 @@ struct CompoundImageRealityView: View {
                 } else {
                     switch PageSwipeDirection.detectDirection(value: value.gestureValue) {
                     case .left:
-                        entityObject.turnToNextPage(value)
+                        entityObject.turnToNextPage()
                     case .right:
-                        entityObject.turnToPreviousPage(value)
+                        entityObject.turnToPreviousPage()
                     case .none:
                         break
                     }
