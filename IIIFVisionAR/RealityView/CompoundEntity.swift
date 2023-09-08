@@ -9,11 +9,15 @@ import RealityKit
 import SwiftUI
 
 actor PageTurnState {
-    var currentRightPageIndex = 1
+    // MARK: currentRightPageIndex access
 
     func updateCurrentRightPageIndex(to newValue: Int) {
         currentRightPageIndex = newValue
     }
+
+    private(set) var currentRightPageIndex = 1
+
+    // MARK: pageIndexEntityDict access
 
     func cachePageEntity(index: Int, entity: Entity) {
         pageIndexEntityDict[index] = entity
