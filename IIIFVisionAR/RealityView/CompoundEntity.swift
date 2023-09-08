@@ -102,8 +102,10 @@ final class CompoundEntity: Entity {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
-            // Lock the pageTurn action to ensure one turn at a time
-            turnPageSemaphore.wait()
+            // Lock the pageTurn action to ensure one turn at a time, don't pending too many in-flight page turn gesture
+            guard turnPageSemaphore.wait(timeout: .now() + 1.0) == .success else {
+                return
+            }
 
             Task {
                 let currentRightPageIndex = await self.pageTurnState.currentRightPageIndex
@@ -147,8 +149,10 @@ final class CompoundEntity: Entity {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
-            // Lock the pageTurn action to ensure one turn at a time
-            self.turnPageSemaphore.wait()
+            // Lock the pageTurn action to ensure one turn at a time, don't pending too many in-flight page turn gesture
+            guard turnPageSemaphore.wait(timeout: .now() + 1.0) == .success else {
+                return
+            }
 
             Task {
                 let currentRightPageIndex = await self.pageTurnState.currentRightPageIndex
