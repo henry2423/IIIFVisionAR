@@ -13,13 +13,11 @@ struct RotationComponent: Component {
     var speed: Float
     var axis: SIMD3<Float>
     var targetAngle: Float
-    var onCompleted: () -> Void
 
-    init(speed: Float = 3.0, targetAngle: Float = .pi, axis: SIMD3<Float> = [0, 0, 1], onCompleted: @escaping () -> Void) {
+    init(speed: Float = 3.0, targetAngle: Float = .pi, axis: SIMD3<Float> = [0, 0, 1]) {
         self.speed = speed
         self.targetAngle = targetAngle
         self.axis = axis
-        self.onCompleted = onCompleted
     }
 }
 
@@ -35,12 +33,17 @@ struct RotationSystem: System {
 
             guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
                 entity.transform.rotation = .init(angle: component.targetAngle, axis: entity.orientation.axis) // Set to the targetAngle
-                component.onCompleted()
                 entity.components.remove(RotationComponent.self)
+                // Send notification to Entity that rotation is finish
+                NotificationCenter.default.post(name: .rotationFinished, object: nil)
                 return
             }
 
             entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
         }
     }
+}
+
+extension Notification.Name {
+    static let rotationFinished = Self(rawValue: "rotationFinished")
 }
