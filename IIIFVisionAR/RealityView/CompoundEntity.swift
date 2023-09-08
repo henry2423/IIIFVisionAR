@@ -160,6 +160,31 @@ final class CompoundEntity: Entity {
         }
     }
 
+    private func observeNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector:#selector(cleanupNonVisibleEntities(_:)),
+                                               name: .rotationFinished,
+                                               object: nil)
+    }
+
+    private func updateCollisionShape() {
+        let bounds = self.visualBounds(relativeTo: nil).extents
+        self.components[CollisionComponent.self]?.shapes = [.generateBox(size: bounds)]
+    }
+
+    private var sourcePosition: SIMD3<Float>?
+    private var sourceRotation: simd_quatf?
+    private var pageIndexEntityDict = [Int: Entity]()  // [PageIndex: Entity]
+    private let imageWidth: Float
+    private let imageHeight: Float
+    private let imageURLPairs: [(URL?, URL?)]
+    private var currentRightPageIndex = 1
+    private var notificationsObserveTask: Task<Void, Never>?
+    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")
+}
+
+// MARK: - Build Entity Page from Images
+extension CompoundEntity {
     private func addNextPage(frontImageURL: URL?, backImageURL: URL?, pageIndex: Int) async throws {
         // Skip building page if it existed
         guard pageIndexEntityDict[pageIndex] == nil else {
@@ -206,18 +231,6 @@ final class CompoundEntity: Entity {
         updateCollisionShape()
     }
 
-    private func observeNotification() {
-        NotificationCenter.default.addObserver(self,
-                                               selector:#selector(cleanupNonVisibleEntities(_:)),
-                                               name: .rotationFinished,
-                                               object: nil)
-    }
-
-    private func updateCollisionShape() {
-        let bounds = self.visualBounds(relativeTo: nil).extents
-        self.components[CollisionComponent.self]?.shapes = [.generateBox(size: bounds)]
-    }
-
     private func buildPage(frontImageURL: URL?, backImageURL: URL?) async throws -> (ModelEntity, ModelEntity) {
         // Set front page
         var frontMaterial = UnlitMaterial(color: .white)
@@ -250,16 +263,6 @@ final class CompoundEntity: Entity {
 
         return (frontPageEntity, backPageEntity)
     }
-
-    private var sourcePosition: SIMD3<Float>?
-    private var sourceRotation: simd_quatf?
-    private var pageIndexEntityDict = [Int: Entity]()  // [PageIndex: Entity]
-    private let imageWidth: Float
-    private let imageHeight: Float
-    private let imageURLPairs: [(URL?, URL?)]
-    private var currentRightPageIndex = 1
-    private var notificationsObserveTask: Task<Void, Never>?
-    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")
 }
 
 // MARK: - Rotation and Drag Gesture
