@@ -48,7 +48,7 @@ struct CompoundImageRealityView: View {
                 if isMovingObject {
                     entityObject.handleDragGestureEnded()
                 } else {
-                    switch SwipeDirection.detectDirection(value: value.gestureValue) {
+                    switch PageSwipeDirection.detectDirection(value: value.gestureValue) {
                     case .left:
                         guard !isLoading, leftPageIndex < imageURLPages.count - 2 else {
                             // Reach the end of the pages (exclude the virtual page)
@@ -87,7 +87,7 @@ struct CompoundImageRealityView: View {
 
                             isLoading = false
                         }
-                    default:
+                    case .none:
                         break
                     }
                 }
@@ -109,8 +109,8 @@ struct CompoundImageRealityView: View {
     @State private var isMovingObject: Bool = false
 }
 
-enum SwipeDirection: String {
-    case left, right, up, down, none
+enum PageSwipeDirection: String {
+    case left, right, none
 
     static func detectDirection(value: DragGesture.Value) -> Self {
         if value.startLocation3D.x > value.location3D.x + 24 {
@@ -118,12 +118,6 @@ enum SwipeDirection: String {
         }
         if value.startLocation3D.x < value.location3D.x - 24 {
             return .right
-        }
-        if value.startLocation3D.y < value.location3D.y - 24 {
-            return .down
-        }
-        if value.startLocation3D.y > value.location3D.y + 24 {
-            return .up
         }
         return .none
     }
