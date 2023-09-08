@@ -48,19 +48,12 @@ final class CompoundEntity: Entity {
 
     @objc func cleanupNonVisibleEntities(_ notification: Notification) {
         turnPageQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
             // Check for current pageIndex
             let pageIndex = self.currentRightPageIndex
-
-            // Check if there're page in rotating, then skip the clean up process
-            for (_, entity) in self.pageIndexEntityDict {
-                if entity.components.has(RotationComponent.self) {
-                    return
-                }
-            }
 
             // Remove extra page if needed if it's not presenting
             for (key, entity) in self.pageIndexEntityDict {
@@ -69,6 +62,9 @@ final class CompoundEntity: Entity {
                     self.removeChild(entity)
                 }
             }
+
+            // Release the lock so next turn next/previous action can start
+            self.turnPageSemaphore.signal()
         }
     }
 
@@ -76,12 +72,14 @@ final class CompoundEntity: Entity {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
+            // Lock the pageTurn action to ensure one turn at a time
+            turnPageSemaphore.wait()
+
             // Don't turn when reaching the end of the pages
             guard self.currentRightPageIndex < self.imageURLPairs.count - 1 else {
+                self.turnPageSemaphore.signal()
                 return
             }
-
-            let asyncSemaphore = DispatchSemaphore(value: 0)
 
             Task {
                 // Build the next page first
@@ -92,11 +90,13 @@ final class CompoundEntity: Entity {
                 // Turn the right page
                 let indexToBeTurned = self.currentRightPageIndex
                 guard let entityToBeTurned = self.pageIndexEntityDict[indexToBeTurned] else {
+                    self.turnPageSemaphore.signal()
                     return
                 }
 
                 // Add the rotationComponent to allow page rotation
                 guard !entityToBeTurned.components.has(RotationComponent.self) else {
+                    self.turnPageSemaphore.signal()
                     return
                 }
 
@@ -107,12 +107,7 @@ final class CompoundEntity: Entity {
 
                 // Update the currenRightPageIndex
                 self.currentRightPageIndex += 1
-
-                asyncSemaphore.signal()
             }
-
-            // Wait until the task finished
-            asyncSemaphore.wait()
         }
     }
 
@@ -120,12 +115,14 @@ final class CompoundEntity: Entity {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
+            // Lock the pageTurn action to ensure one turn at a time
+            self.turnPageSemaphore.wait()
+
             // Don't turn when reaching the start of the pages
             guard self.currentRightPageIndex > 1 else {
+                self.turnPageSemaphore.signal()
                 return
             }
-
-            let asyncSemaphore = DispatchSemaphore(value: 0)
 
             Task {
                 // Build the previous page first
@@ -136,11 +133,13 @@ final class CompoundEntity: Entity {
                 // Turn the left page
                 let indexToBeTurned = self.currentRightPageIndex - 1
                 guard let entityToBeTurned = self.pageIndexEntityDict[indexToBeTurned] else {
+                    self.turnPageSemaphore.signal()
                     return
                 }
 
                 // Add the rotationComponent to allow page rotation
                 guard !entityToBeTurned.components.has(RotationComponent.self) else {
+                    self.turnPageSemaphore.signal()
                     return
                 }
 
@@ -151,12 +150,7 @@ final class CompoundEntity: Entity {
 
                 // Update the currenRightPageIndex
                 self.currentRightPageIndex -= 1
-
-                asyncSemaphore.signal()
             }
-
-            // Wait until the task finished
-            asyncSemaphore.wait()
         }
     }
 
@@ -179,8 +173,8 @@ final class CompoundEntity: Entity {
     private let imageHeight: Float
     private let imageURLPairs: [(URL?, URL?)]
     private var currentRightPageIndex = 1
-    private var notificationsObserveTask: Task<Void, Never>?
-    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue")
+    private let turnPageSemaphore = DispatchSemaphore(value: 1) // To ensure the memory efficiency, we turn 1 page at the time
+    private let turnPageQueue = DispatchQueue(label: "IIIFVisionAR.turnPageQueue", attributes: .concurrent)
 }
 
 // MARK: - Build Entity Page from Images
