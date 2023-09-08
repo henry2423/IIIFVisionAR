@@ -24,10 +24,10 @@ struct CompoundImageRealityView: View {
         RealityView { content in
             content.add(rootEntity)
 
+            try? await entityObject.loadInitialPages()
+
             // Add object on the anchorEntity
             rootEntity.addChild(entityObject)
-
-            try? await entityObject.loadInitialPages()
         }
         .gesture(TapGesture(count: 2)
             .targetedToAnyEntity()

@@ -46,6 +46,32 @@ final class CompoundEntity: Entity {
                                pageIndex: 1)
     }
 
+    @objc func cleanupNonVisibleEntities(_ notification: Notification) {
+        turnPageQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            // Check for current pageIndex
+            let pageIndex = self.currentRightPageIndex
+
+            // Check if there're page in rotating, then skip the clean up process
+            for (_, entity) in self.pageIndexEntityDict {
+                if entity.components.has(RotationComponent.self) {
+                    return
+                }
+            }
+
+            // Remove extra page if needed if it's not presenting
+            for (key, entity) in self.pageIndexEntityDict {
+                if key != pageIndex && key != pageIndex - 1 {
+                    self.pageIndexEntityDict.removeValue(forKey: key)
+                    self.removeChild(entity)
+                }
+            }
+        }
+    }
+
     func turnToNextPage(_ value: EntityTargetValue<DragGesture.Value>) {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
@@ -182,24 +208,9 @@ final class CompoundEntity: Entity {
 
     private func observeNotification() {
         NotificationCenter.default.addObserver(self,
-                                               selector:#selector(rotationFinishedNotification(_:)),
+                                               selector:#selector(cleanupNonVisibleEntities(_:)),
                                                name: .rotationFinished,
                                                object: nil)
-    }
-
-    @objc func rotationFinishedNotification(_ notification: Notification) {
-        turnPageQueue.async {
-            // Check for current pageIndex
-            let pageIndex = self.currentRightPageIndex
-
-            // Remove extra page if needed if it's not presenting
-            for (key, entity) in self.pageIndexEntityDict {
-                if key != pageIndex && key != pageIndex - 1 {
-                    self.pageIndexEntityDict.removeValue(forKey: key)
-                    self.removeChild(entity)
-                }
-            }
-        }
     }
 
     private func updateCollisionShape() {
