@@ -1,15 +1,15 @@
 //
 //  RotationSystem.swift
-//  IIIFVisionAR
+//  
 //
-//  Created by Henry Huang on 8/21/23.
+//  Created by Henry Huang on 9/8/23.
 //
 
 import SwiftUI
 import RealityKit
 
 /// Rotation information for an entity.
-struct RotationComponent: Component {
+public struct RotationComponent: Component {
     var speed: Float
     var axis: SIMD3<Float>
     var targetAngle: Float
@@ -22,12 +22,12 @@ struct RotationComponent: Component {
 }
 
 /// A system that rotates entities with a rotation component.
-struct RotationSystem: System {
+public struct RotationSystem: System {
     static let query = EntityQuery(where: .has(RotationComponent.self))
 
-    init(scene: RealityKit.Scene) {}
+    public init(scene: RealityKit.Scene) {}
 
-    func update(context: SceneUpdateContext) {
+    public func update(context: SceneUpdateContext) {
         for entity in context.scene.performQuery(Self.query) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 

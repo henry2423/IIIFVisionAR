@@ -1,13 +1,13 @@
 //
 //  PagePairHelper .swift
-//  IIIFVisionAR
+//  
 //
 //  Created by Henry Huang on 9/8/23.
 //
 
 import Foundation
 
-extension Collection {
+public extension Collection {
     /// Build pair for book representation
     /// Add (nil, nil) pair at the front to ensure the page start from the rightSide.
     /// Add (nil, nil) pair to the end if the input is even number, to ensure we can scroll the last page to the leftSide.

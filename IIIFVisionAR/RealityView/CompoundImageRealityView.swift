@@ -8,9 +8,10 @@
 import SwiftUI
 import ARKit
 import RealityKit
+import IIIFImageEntity
 
 struct CompoundImageRealityView: View {
-    let entityObject = CompoundEntity(width: 1.100, height: 1.418, imageURLPairs: [
+    let entityObject = CompoundImageEntity(width: 1.100, height: 1.418, imageURLPairs: [
         Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,
         Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!,
         Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!,
@@ -27,7 +28,7 @@ struct CompoundImageRealityView: View {
         RealityView { content in
             content.add(rootEntity)
 
-            try? await entityObject.loadInitialPages()
+            try? await entityObject.loadInitialResource()
 
             // Add object on the anchorEntity
             rootEntity.addChild(entityObject)

@@ -1,6 +1,6 @@
 //
 //  CompoundEntity.swift
-//  IIIFVisionAR
+//
 //
 //  Created by Henry Huang on 8/21/23.
 //
@@ -38,9 +38,9 @@ actor PageTurnState {
     private var pageIndexEntityDict = [Int: Entity]()  // [PageIndex: Entity]
 }
 
-final class CompoundEntity: Entity {
+public final class CompoundImageEntity: Entity {
 
-    required init(width: Float, height: Float, imageURLPairs: [(URL?, URL?)]) {
+    public required init(width: Float, height: Float, imageURLPairs: [(URL?, URL?)]) {
         self.imageWidth = width
         self.imageHeight = height
         self.imageURLPairs = imageURLPairs
@@ -49,7 +49,11 @@ final class CompoundEntity: Entity {
 
         let bounds = self.visualBounds(relativeTo: nil).extents
         self.components.set(CollisionComponent(shapes: [.generateBox(size: bounds)]))
+
+        #if os(visionOS) // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
         self.components.set(InputTargetComponent())
+        #endif
+
         observeNotification()
     }
 
@@ -60,20 +64,6 @@ final class CompoundEntity: Entity {
 
     deinit {
         NotificationCenter.default.removeObserver(self, name: .rotationFinished, object: nil)
-    }
-
-    func loadInitialPages() async throws {
-        await pageTurnState.updateCurrentRightPageIndex(to: 1)
-
-        // Load the left side (ideally nil images)
-        try? await addPreviousPage(frontImageURL: imageURLPairs[0].0,
-                                   backImageURL: imageURLPairs[0].1,
-                                   pageIndex: 0)
-
-        // Load the right side
-        try? await addNextPage(frontImageURL: imageURLPairs[1].0,
-                               backImageURL: imageURLPairs[1].1,
-                               pageIndex: 1)
     }
 
     @objc func cleanupNonVisibleEntities(_ notification: Notification) {
@@ -102,7 +92,46 @@ final class CompoundEntity: Entity {
         }
     }
 
-    func turnToNextPage() {
+    private func observeNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector:#selector(cleanupNonVisibleEntities(_:)),
+                                               name: .rotationFinished,
+                                               object: nil)
+    }
+
+    private func updateCollisionShape() {
+        let bounds = self.visualBounds(relativeTo: nil).extents
+        self.components[CollisionComponent.self]?.shapes = [.generateBox(size: bounds)]
+    }
+
+    private var sourcePosition: SIMD3<Float>?
+    private var sourceRotation: simd_quatf?
+    private let imageWidth: Float
+    private let imageHeight: Float
+    private let imageURLPairs: [(URL?, URL?)]
+    private let pageTurnState = PageTurnState()
+    private let turnPageSemaphore = DispatchSemaphore(value: 1) // To ensure the memory efficiency, we turn 1 page at the time
+    private let turnPageQueue = DispatchQueue(label: "turnPageQueue.IIIFVisionAR", attributes: .concurrent)
+}
+
+// MARK: IIIFImageEntityProtocol
+
+extension CompoundImageEntity: IIIFImageEntityProtocol {
+    public func loadInitialResource() async throws {
+        await pageTurnState.updateCurrentRightPageIndex(to: 1)
+
+        // Load the left side (ideally nil images)
+        try? await addPreviousPage(frontImageURL: imageURLPairs[0].0,
+                                   backImageURL: imageURLPairs[0].1,
+                                   pageIndex: 0)
+
+        // Load the right side
+        try? await addNextPage(frontImageURL: imageURLPairs[1].0,
+                               backImageURL: imageURLPairs[1].1,
+                               pageIndex: 1)
+    }
+
+    public func turnToNextPage() {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
@@ -149,7 +178,7 @@ final class CompoundEntity: Entity {
         }
     }
 
-    func turnToPreviousPage() {
+    public func turnToPreviousPage() {
         turnPageQueue.async { [weak self] in
             guard let self else { return }
 
@@ -196,30 +225,35 @@ final class CompoundEntity: Entity {
         }
     }
 
-    private func observeNotification() {
-        NotificationCenter.default.addObserver(self,
-                                               selector:#selector(cleanupNonVisibleEntities(_:)),
-                                               name: .rotationFinished,
-                                               object: nil)
+    #if os(visionOS) // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
+    public func handleDragGesture(_ value: EntityTargetValue<DragGesture.Value>) {
+        let sourcePosition = sourcePosition ?? self.position
+        self.sourcePosition = sourcePosition
+        let delta = value.convert(value.translation3D, from: .local, to: self.parent!)
+        // Only allow the object to be moved along the X- and Z-axis.
+        self.position = sourcePosition + SIMD3(delta.x, 0, delta.z)
     }
 
-    private func updateCollisionShape() {
-        let bounds = self.visualBounds(relativeTo: nil).extents
-        self.components[CollisionComponent.self]?.shapes = [.generateBox(size: bounds)]
+    public func handleDragGestureEnded() {
+        sourcePosition = nil
     }
 
-    private var sourcePosition: SIMD3<Float>?
-    private var sourceRotation: simd_quatf?
-    private let imageWidth: Float
-    private let imageHeight: Float
-    private let imageURLPairs: [(URL?, URL?)]
-    private let pageTurnState = PageTurnState()
-    private let turnPageSemaphore = DispatchSemaphore(value: 1) // To ensure the memory efficiency, we turn 1 page at the time
-    private let turnPageQueue = DispatchQueue(label: "turnPageQueue.IIIFVisionAR", attributes: .concurrent)
+    public func handleRotationGesture(_ value: EntityTargetValue<RotateGesture.Value>) {
+        let sourceRotation = sourceRotation ?? self.transform.rotation
+        self.sourceRotation = sourceRotation
+        let delta = simd_quatf(angle: -Float(value.rotation.radians), axis: [0, 1, 0])
+        self.transform.rotation = sourceRotation * delta
+    }
+
+    public func handleRotationGestureEnded() {
+        sourceRotation = nil
+    }
+    #endif
 }
 
 // MARK: - Build Entity Page from Images
-extension CompoundEntity {
+
+extension CompoundImageEntity {
     private func addNextPage(frontImageURL: URL?, backImageURL: URL?, pageIndex: Int) async throws {
         // Skip building page if it existed
         guard await pageTurnState.getPageEntity(index: pageIndex) == nil else {
@@ -271,7 +305,11 @@ extension CompoundEntity {
         var frontMaterial = UnlitMaterial(color: .white)
 
         if let frontImageURL {
+            #if os(visionOS)    // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
             let resource = try await TextureResource(contentsOf: frontImageURL)
+            #else
+            let resource = try TextureResource.load(contentsOf: frontImageURL)
+            #endif
             frontMaterial.color.texture = .init(resource)
         }
         else {
@@ -285,7 +323,11 @@ extension CompoundEntity {
         var backMaterial = UnlitMaterial(color: .white)
 
         if let backImageURL {
+            #if os(visionOS)    // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
             let resource = try await TextureResource(contentsOf: backImageURL)
+            #else
+            let resource = try TextureResource.load(contentsOf: backImageURL)
+            #endif
             backMaterial.color.texture = .init(resource)
         }
         else {
@@ -297,32 +339,5 @@ extension CompoundEntity {
         backPageEntity.position = [imageWidth / 2, 0, 0]
 
         return (frontPageEntity, backPageEntity)
-    }
-}
-
-// MARK: - Rotation and Drag Gesture
-
-extension CompoundEntity {
-    func handleDragGesture(_ value: EntityTargetValue<DragGesture.Value>) {
-        let sourcePosition = sourcePosition ?? self.position
-        self.sourcePosition = sourcePosition
-        let delta = value.convert(value.translation3D, from: .local, to: self.parent!)
-        // Only allow the object to be moved along the X- and Z-axis.
-        self.position = sourcePosition + SIMD3(delta.x, 0, delta.z)
-    }
-
-    func handleDragGestureEnded() {
-        sourcePosition = nil
-    }
-
-    func handleRotationGesture(_ value: EntityTargetValue<RotateGesture.Value>) {
-        let sourceRotation = sourceRotation ?? self.transform.rotation
-        self.sourceRotation = sourceRotation
-        let delta = simd_quatf(angle: -Float(value.rotation.radians), axis: [0, 1, 0])
-        self.transform.rotation = sourceRotation * delta
-    }
-
-    func handleRotationGestureEnded() {
-        sourceRotation = nil
     }
 }

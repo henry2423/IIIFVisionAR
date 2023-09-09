@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import IIIFImageEntity
 
 @main
 struct IIIFVisionARApp: App {
