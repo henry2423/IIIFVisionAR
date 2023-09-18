@@ -73,7 +73,7 @@ extension SingleImageEntity: IIIFImageEntityProtocol {
     public func handleDragGesture(_ value: EntityTargetValue<DragGesture.Value>) {
         let sourcePosition = sourcePosition ?? self.position
         self.sourcePosition = sourcePosition
-        let delta = value.convert(value.translation3D, from: .local, to: self.parent!)
+        let delta = value.convert(value.translation3D, from: .local, to: .scene)
         // Only allow the object to be moved along the X- and Z-axis.
         self.position = sourcePosition + SIMD3(delta.x, 0, delta.z)
     }
