@@ -39,6 +39,7 @@ public struct RotationSystem: System {
                 return
             }
 
+            // Update orientation with deltaTime from current orientation to +0.0.. degree
             entity.setOrientation(.init(angle: component.speed * Float(context.deltaTime), axis: component.axis), relativeTo: entity)
         }
     }
