@@ -16,7 +16,7 @@ struct IIIFVisionARApp: App {
         }
         .windowStyle(.plain)
 
-        // A volume that displays a globe.
+
         WindowGroup(id: "CompoundImageVolume") {
             CompoundImageVolumetric()
         }
