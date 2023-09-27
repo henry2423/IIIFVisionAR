@@ -16,6 +16,13 @@ struct IIIFVisionARApp: App {
         }
         .windowStyle(.plain)
 
+        // A volume that displays a globe.
+        WindowGroup(id: "CompoundImageVolume") {
+            CompoundImageVolumetric()
+        }
+        .windowStyle(.volumetric)
+        .defaultSize(width: 2.2, height: 1.418, depth: 1.418, in: .meters)
+
         ImmersiveSpace(id: "SingleImage") {
             SingleImageRealityView()
         }
