@@ -10,16 +10,7 @@ import RealityKit
 import IIIFImageEntity
 
 struct CompoundImageVolumetric: View {
-    let entityObject = CompoundImageEntity(width: 1.100, height: 1.418, imageURLPairs: [
-        Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!,
-    ].buildPagePairs())
+    let entityObject: CompoundImageEntity
 
     var body: some View {
         RealityView { content in

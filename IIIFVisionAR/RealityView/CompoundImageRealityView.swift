@@ -11,17 +11,7 @@ import RealityKit
 import IIIFImageEntity
 
 struct CompoundImageRealityView: View {
-    let entityObject = CompoundImageEntity(width: 1.100, height: 1.418, imageURLPairs: [
-        Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!,
-        Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!,
-    ].buildPagePairs())
-
+    let entityObject: CompoundImageEntity
     let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .continuous)
 
     var body: some View {

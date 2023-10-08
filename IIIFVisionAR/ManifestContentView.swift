@@ -8,6 +8,19 @@
 import SwiftUI
 
 struct ManifestContentView: View {
+    private let iiifItem = IIIFItem(width: 1.1,
+                                    height: 1.418,
+                                    urls: [
+                                        Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-2", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-3", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-4", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-5", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-6", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!,
+                                        Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!,
+                                    ])
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -31,7 +44,7 @@ struct ManifestContentView: View {
                         .onTapGesture {
                             Task {
                                 if !isImmersiveSpaceOpened {
-                                    await openImmersiveSpace(id: "CompoundImage")
+                                    await openImmersiveSpace(id: "CompoundImage", value: iiifItem)
                                 } else {
                                     await dismissImmersiveSpace()
                                 }
@@ -44,7 +57,7 @@ struct ManifestContentView: View {
                 Toggle("Present Compound IIIF in Volumetric Space", isOn: $isShowingVolumetric)
                     .onChange(of: isShowingVolumetric) { _, isShowing in
                         if isShowing {
-                            openWindow(id: "CompoundImageVolume")
+                            openWindow(id: "CompoundImageVolume", value: iiifItem)
                         } else {
                             dismissWindow(id: "CompoundImageVolume")
                         }
