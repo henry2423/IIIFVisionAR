@@ -49,6 +49,7 @@ public final class CompoundImageEntity: Entity {
 
         super.init()
 
+        self.name = UUID().uuidString   // Setup for unique identifier for RotationSystem
         let bounds = self.visualBounds(relativeTo: nil).extents
         self.components.set(CollisionComponent(shapes: [.generateBox(size: bounds)]))
 
@@ -75,6 +76,12 @@ public final class CompoundImageEntity: Entity {
     }
 
     @objc func cleanupNonVisibleEntities(_ notification: Notification) {
+        // Ensure the target entityName is self
+        guard let entityName = notification.userInfo?["entityName"] as? String,
+              entityName == self.name else {
+            return
+        }
+
         turnPageQueue.async { [weak self] in
             guard let self else {
                 return

@@ -35,7 +35,8 @@ public struct RotationSystem: System {
                 entity.transform.rotation = .init(angle: component.targetAngle, axis: entity.orientation.axis) // Set to the targetAngle
                 entity.components.remove(RotationComponent.self)
                 // Send notification to Entity that rotation is finish
-                NotificationCenter.default.post(name: .rotationFinished, object: nil)
+                // With the entityName to ensure the target entity gets notification
+                NotificationCenter.default.post(name: .rotationFinished, object: nil, userInfo: ["entityName": entity.parent?.name ?? ""])
                 return
             }
 
