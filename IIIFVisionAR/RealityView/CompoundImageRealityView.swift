@@ -12,7 +12,7 @@ import IIIFImageEntity
 
 struct CompoundImageRealityView: View {
     let entityObject: CompoundImageEntity
-    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .continuous)
+    let rootEntity = AnchorEntity(.plane(.horizontal, classification: .floor, minimumBounds: [0, 0]), trackingMode: .once)
 
     var body: some View {
         RealityView { content in
