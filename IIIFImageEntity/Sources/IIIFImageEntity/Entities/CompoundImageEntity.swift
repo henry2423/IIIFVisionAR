@@ -5,6 +5,8 @@
 //  Created by Henry Huang on 8/21/23.
 //
 
+import Foundation
+import AVFoundation
 import RealityKit
 import SwiftUI
 
@@ -55,6 +57,12 @@ public final class CompoundImageEntity: Entity {
         #endif
 
         observeNotification()
+
+        #if os(visionOS)
+        configureSpatialAudioExperience()
+        #endif
+
+        setupSoundSystem()
     }
 
     @available(*, unavailable)
@@ -112,6 +120,7 @@ public final class CompoundImageEntity: Entity {
     private let pageTurnState = PageTurnState()
     private let turnPageSemaphore = DispatchSemaphore(value: 1) // To ensure the memory efficiency, we turn 1 page at the time
     private let turnPageQueue = DispatchQueue(label: "turnPageQueue.IIIFVisionAR", attributes: .concurrent)
+    private var pageTurnSoundController: AudioPlaybackController?
 }
 
 // MARK: IIIFImageEntityProtocol
@@ -154,6 +163,8 @@ extension CompoundImageEntity: IIIFImageEntityProtocol {
                                             backImageURL: self.imageURLPairs[currentRightPageIndex + 1].1,
                                             pageIndex: currentRightPageIndex + 1)
 
+                self.pageTurnSoundController?.play()
+
                 // Turn the right page
                 let indexToBeTurned = currentRightPageIndex
                 guard let entityToBeTurned = await self.pageTurnState.getPageEntity(index: indexToBeTurned) else {
@@ -195,6 +206,8 @@ extension CompoundImageEntity: IIIFImageEntityProtocol {
                     self.turnPageSemaphore.signal()
                     return
                 }
+
+                self.pageTurnSoundController?.play()
 
                 // Build the previous page first
                 try? await self.addPreviousPage(frontImageURL: self.imageURLPairs[currentRightPageIndex - 2].0,
@@ -340,4 +353,27 @@ extension CompoundImageEntity {
 
         return (frontPageEntity, backPageEntity)
     }
+}
+
+// MARK: Sound System
+
+extension CompoundImageEntity {
+    private func setupSoundSystem() {
+        if let pageTurnSoundResource = try? AudioFileResource.load(named: "pageTurnSound.wav", in: Bundle.module) {
+            self.pageTurnSoundController = prepareAudio(pageTurnSoundResource)
+        }
+    }
+
+    #if os(visionOS)
+    /// Configures a person's intended Spatial Audio experience to best fit the presentation.
+    /// - Parameter presentation: the requested player presentation.
+    private func configureSpatialAudioExperience() {
+        do {
+            let experience: AVAudioSessionSpatialExperience = .headTracked(soundStageSize: .automatic, anchoringStrategy: .automatic)
+            try AVAudioSession.sharedInstance().setIntendedSpatialExperience(experience)
+        } catch {
+            // TODO: Error handling
+        }
+    }
+    #endif
 }
