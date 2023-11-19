@@ -30,7 +30,7 @@ final class AppState {
             viewState = .openImmersiveSpace(id: "SingleImage", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Volumetric if < 2x2
-        else if iiifItem.width <= 1 && iiifItem.height <= 1 {
+        else if iiifItem.width <= 1 && iiifItem.height <= 2 {
             viewState = .openWindow(id: "CompoundImageVolume", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Immersive Space if > 2x2x2

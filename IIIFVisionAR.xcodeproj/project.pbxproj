@@ -11,6 +11,10 @@
 		BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */; };
 		BA55837B2B0AC0A500C1E264 /* ManifestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA55837A2B0AC0A500C1E264 /* ManifestListView.swift */; };
 		BA55837F2B0ACD1D00C1E264 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA55837E2B0ACD1D00C1E264 /* AppState.swift */; };
+		BA5583842B0AD50700C1E264 /* News-4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BA5583802B0AD50700C1E264 /* News-4.jpg */; };
+		BA5583852B0AD50700C1E264 /* News-1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BA5583812B0AD50700C1E264 /* News-1.jpg */; };
+		BA5583862B0AD50700C1E264 /* News-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BA5583822B0AD50700C1E264 /* News-2.jpg */; };
+		BA5583872B0AD50700C1E264 /* News-3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BA5583832B0AD50700C1E264 /* News-3.jpg */; };
 		BA7C051D2AABF2890043398D /* IIIFImageEntity in Frameworks */ = {isa = PBXBuildFile; productRef = BA7C051C2AABF2890043398D /* IIIFImageEntity */; };
 		BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */; };
 		BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */; };
@@ -34,6 +38,10 @@
 		BA4D1D492AABF223006098B8 /* IIIFImageEntity */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = IIIFImageEntity; sourceTree = "<group>"; };
 		BA55837A2B0AC0A500C1E264 /* ManifestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestListView.swift; sourceTree = "<group>"; };
 		BA55837E2B0ACD1D00C1E264 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		BA5583802B0AD50700C1E264 /* News-4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "News-4.jpg"; sourceTree = "<group>"; };
+		BA5583812B0AD50700C1E264 /* News-1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "News-1.jpg"; sourceTree = "<group>"; };
+		BA5583822B0AD50700C1E264 /* News-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "News-2.jpg"; sourceTree = "<group>"; };
+		BA5583832B0AD50700C1E264 /* News-3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "News-3.jpg"; sourceTree = "<group>"; };
 		BA966FBA2A92DAA400E2CABC /* IIIFVisionAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IIIFVisionAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IIIFVisionARApp.swift; sourceTree = "<group>"; };
 		BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestContentView.swift; sourceTree = "<group>"; };
@@ -135,6 +143,10 @@
 				BAC922902A95CCD20028DE56 /* Love-6.jpg */,
 				BAC922912A95CCD20028DE56 /* Love-7.jpg */,
 				BAC9228C2A95CCD20028DE56 /* Love-8.jpg */,
+				BA5583812B0AD50700C1E264 /* News-1.jpg */,
+				BA5583822B0AD50700C1E264 /* News-2.jpg */,
+				BA5583832B0AD50700C1E264 /* News-3.jpg */,
+				BA5583802B0AD50700C1E264 /* News-4.jpg */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -203,6 +215,8 @@
 				BAC922942A95CCD20028DE56 /* Love-8.jpg in Resources */,
 				BAC922922A95CCD20028DE56 /* Love-4.jpg in Resources */,
 				BAC922982A95CCD20028DE56 /* Love-6.jpg in Resources */,
+				BA5583872B0AD50700C1E264 /* News-3.jpg in Resources */,
+				BA5583862B0AD50700C1E264 /* News-2.jpg in Resources */,
 				BA966FC62A92DAA700E2CABC /* Preview Assets.xcassets in Resources */,
 				BAC922962A95CCD20028DE56 /* Love-3.jpg in Resources */,
 				BAC922992A95CCD20028DE56 /* Love-7.jpg in Resources */,
@@ -211,6 +225,8 @@
 				BAC922972A95CCD20028DE56 /* Love-2.jpg in Resources */,
 				BADC1AB42A9303C4000BD966 /* Hollywood.jpg in Resources */,
 				BAC922952A95CCD20028DE56 /* Love-1.jpg in Resources */,
+				BA5583842B0AD50700C1E264 /* News-4.jpg in Resources */,
+				BA5583852B0AD50700C1E264 /* News-1.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

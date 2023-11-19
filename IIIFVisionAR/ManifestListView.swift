@@ -36,6 +36,15 @@ struct ManifestListView: View {
                     Bundle.main.url(forResource: "Love-7", withExtension: "jpg")!,
                     Bundle.main.url(forResource: "Love-8", withExtension: "jpg")!,
                  ]),
+        IIIFItem(itemName: "News",
+                 width: 0.801,
+                 height: 1.151,
+                 urls: [
+                    Bundle.main.url(forResource: "News-1", withExtension: "jpg")!,
+                    Bundle.main.url(forResource: "News-2", withExtension: "jpg")!,
+                    Bundle.main.url(forResource: "News-3", withExtension: "jpg")!,
+                    Bundle.main.url(forResource: "News-4", withExtension: "jpg")!,
+                 ]),
     ]
 }
 
