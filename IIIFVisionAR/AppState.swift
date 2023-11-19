@@ -12,8 +12,8 @@ import Foundation
 final class AppState {
 
     enum IIIFViewState: Equatable {
-        case openImmersiveSpace(id: String)
-        case openWindow(id: String)
+        case openImmersiveSpace(id: String, iiifItem: IIIFItem)
+        case openWindow(id: String, iiifItem: IIIFItem)
         case closeImmersiveSpace(id: String)
         case closeWindow(id: String)
         case none
@@ -27,23 +27,23 @@ final class AppState {
 
         // Show SingleImageView if only one url
         if iiifItem.urls.count == 1 {
-            viewState = .openImmersiveSpace(id: "SingleImage")
+            viewState = .openImmersiveSpace(id: "SingleImage", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Volumetric if < 2x2
         else if iiifItem.width <= 1 && iiifItem.height <= 1 {
-            viewState = .openWindow(id: "CompoundImageVolume")
+            viewState = .openWindow(id: "CompoundImageVolume", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Immersive Space if > 2x2x2
         else {
-            viewState = .openImmersiveSpace(id: "CompoundImage")
+            viewState = .openImmersiveSpace(id: "CompoundImage", iiifItem: iiifItem)
         }
     }
 
     func closeIIIFItem() {
         switch viewState {
-        case .openImmersiveSpace(let id):
+        case .openImmersiveSpace(let id, _):
             viewState = .closeImmersiveSpace(id: id)
-        case .openWindow(let id):
+        case .openWindow(let id, _):
             viewState = .closeWindow(id: id)
         case .closeImmersiveSpace, .closeWindow, .none:
             break

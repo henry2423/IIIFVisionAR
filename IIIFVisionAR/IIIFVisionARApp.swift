@@ -25,14 +25,14 @@ struct IIIFVisionARApp: App {
                 // Call ImmersiveSpace/Window system call when viewState changed
                 .onChange(of: appState.viewState) { _, viewState in
                     switch viewState {
-                    case .openImmersiveSpace(let id):
-                        Task {
-                            await openImmersiveSpace(id: id)
+                    case .openImmersiveSpace(let id, let iiifItem):
+                        Task { @MainActor in
+                            await openImmersiveSpace(id: id, value: iiifItem)
                         }
-                    case .openWindow(let id):
-                        openWindow(id: id)
+                    case .openWindow(let id, let iiifItem):
+                        openWindow(id: id, value: iiifItem)
                     case .closeImmersiveSpace:
-                        Task {
+                        Task { @MainActor in
                             await dismissImmersiveSpace()
                         }
                     case .closeWindow(let id):
@@ -46,9 +46,13 @@ struct IIIFVisionARApp: App {
 
         // MARK: SingleImage
 
-        ImmersiveSpace(id: "SingleImage") {
-            SingleImageRealityView(entityObject: SingleImageEntity(width: 2.261, height: 2.309, imageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!))
-                .environment(appState)
+        ImmersiveSpace(id: "SingleImage", for: IIIFItem.self) { $iiifItem in
+            if let iiifItem {
+                SingleImageRealityView(entityObject: SingleImageEntity(width: iiifItem.width,
+                                                                       height: iiifItem.height,
+                                                                       imageURL: iiifItem.urls.first!))
+                    .environment(appState)
+            }
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
         
