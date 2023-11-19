@@ -329,9 +329,9 @@ extension CompoundImageEntity {
 
         if let frontImageURL {
             #if os(visionOS)    // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
-            let resource = try await TextureResource(contentsOf: frontImageURL)
+            let resource = try await TextureResource(contentsOf: frontImageURL, options: .init(semantic: .color))
             #else
-            let resource = try TextureResource.load(contentsOf: frontImageURL)
+            let resource = try TextureResource.load(contentsOf: frontImageURL, options: .init(semantic: .color))
             #endif
             frontMaterial.color.texture = .init(resource)
         }
@@ -347,9 +347,9 @@ extension CompoundImageEntity {
 
         if let backImageURL {
             #if os(visionOS)    // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
-            let resource = try await TextureResource(contentsOf: backImageURL)
+            let resource = try await TextureResource(contentsOf: backImageURL, options: .init(semantic: .color))
             #else
-            let resource = try TextureResource.load(contentsOf: backImageURL)
+            let resource = try TextureResource.load(contentsOf: backImageURL, options: .init(semantic: .color))
             #endif
             backMaterial.color.texture = .init(resource)
         }
