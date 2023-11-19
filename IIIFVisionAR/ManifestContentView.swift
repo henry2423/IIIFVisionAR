@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ManifestContentView: View {
-    private let iiifItem = IIIFItem(width: 1.1,
+    private let iiifItem = IIIFItem(width: 1.105,
                                     height: 1.418,
                                     urls: [
                                         Bundle.main.url(forResource: "Love-1", withExtension: "jpg")!,

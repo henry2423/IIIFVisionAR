@@ -15,7 +15,7 @@ struct CompoundImageVolumetric: View {
     var body: some View {
         RealityView { content in
             try? await entityObject.loadInitialResource()
-            entityObject.transform.translation = .init(x: 0, y: -1.5, z: 1.418/2)
+            entityObject.transform.translation = .init(x: 0, y: -0.8, z: 0.2)
             content.add(entityObject)
         }
         .gesture(DragGesture()

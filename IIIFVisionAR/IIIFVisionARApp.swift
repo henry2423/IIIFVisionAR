@@ -39,7 +39,7 @@ struct IIIFVisionARApp: App {
             }
         }
         .windowStyle(.volumetric)
-        .defaultSize(width: 3, height: 3, depth: 3, in: .meters)
+        .defaultSize(width: 2, height: 2, depth: 2, in: .meters)
 
         ImmersiveSpace(id: "CompoundImage", for: IIIFItem.self) { $iiifItem in
             if let iiifItem {
