@@ -8,7 +8,9 @@
 import SwiftUI
 import IIIFImageEntity
 
-struct IIIFItem: Codable, Hashable {
+struct IIIFItem: Codable, Hashable, Identifiable {
+    let id = UUID()
+    let itemName: String
     let width: Float
     let height: Float
     let urls: [URL]
@@ -18,7 +20,7 @@ struct IIIFItem: Codable, Hashable {
 struct IIIFVisionARApp: App {
     var body: some Scene {
         WindowGroup {
-            ManifestContentView()
+            ManifestListView()
         }
         .windowStyle(.plain)
 
