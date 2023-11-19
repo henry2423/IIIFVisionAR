@@ -12,7 +12,7 @@ struct ManifestListView: View {
         NavigationStack {
             List(iiifItems) { iiifItem in
                 NavigationLink {
-                    ManifestContentView()
+                    ManifestContentView(iiifItem: iiifItem)
                 } label: {
                     Text(iiifItem.itemName)
                 }

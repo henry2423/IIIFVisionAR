@@ -10,6 +10,7 @@
 		BA0AD5B72AB6C99000750AF5 /* CompoundImageVolumetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0AD5B62AB6C99000750AF5 /* CompoundImageVolumetric.swift */; };
 		BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */; };
 		BA55837B2B0AC0A500C1E264 /* ManifestListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA55837A2B0AC0A500C1E264 /* ManifestListView.swift */; };
+		BA55837F2B0ACD1D00C1E264 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA55837E2B0ACD1D00C1E264 /* AppState.swift */; };
 		BA7C051D2AABF2890043398D /* IIIFImageEntity in Frameworks */ = {isa = PBXBuildFile; productRef = BA7C051C2AABF2890043398D /* IIIFImageEntity */; };
 		BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */; };
 		BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */; };
@@ -32,6 +33,7 @@
 		BA3E80892A92E00100A6E666 /* SingleImageRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageRealityView.swift; sourceTree = "<group>"; };
 		BA4D1D492AABF223006098B8 /* IIIFImageEntity */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = IIIFImageEntity; sourceTree = "<group>"; };
 		BA55837A2B0AC0A500C1E264 /* ManifestListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestListView.swift; sourceTree = "<group>"; };
+		BA55837E2B0ACD1D00C1E264 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		BA966FBA2A92DAA400E2CABC /* IIIFVisionAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IIIFVisionAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IIIFVisionARApp.swift; sourceTree = "<group>"; };
 		BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestContentView.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				BA966FBD2A92DAA400E2CABC /* IIIFVisionARApp.swift */,
+				BA55837E2B0ACD1D00C1E264 /* AppState.swift */,
 				BA55837A2B0AC0A500C1E264 /* ManifestListView.swift */,
 				BA966FBF2A92DAA400E2CABC /* ManifestContentView.swift */,
 				BAC922802A95C4850028DE56 /* RealityView */,
@@ -220,6 +223,7 @@
 			files = (
 				BA3E808A2A92E00100A6E666 /* SingleImageRealityView.swift in Sources */,
 				BA55837B2B0AC0A500C1E264 /* ManifestListView.swift in Sources */,
+				BA55837F2B0ACD1D00C1E264 /* AppState.swift in Sources */,
 				BA966FC02A92DAA400E2CABC /* ManifestContentView.swift in Sources */,
 				BAD1A7D62A94777700DFDA32 /* CompoundImageRealityView.swift in Sources */,
 				BA966FBE2A92DAA400E2CABC /* IIIFVisionARApp.swift in Sources */,

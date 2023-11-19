@@ -9,7 +9,7 @@ import SwiftUI
 import IIIFImageEntity
 
 struct IIIFItem: Codable, Hashable, Identifiable {
-    let id = UUID()
+    var id = UUID()
     let itemName: String
     let width: Float
     let height: Float
@@ -21,6 +21,26 @@ struct IIIFVisionARApp: App {
     var body: some Scene {
         WindowGroup {
             ManifestListView()
+                .environment(appState)
+                // Call ImmersiveSpace/Window system call when viewState changed
+                .onChange(of: appState.viewState) { _, viewState in
+                    switch viewState {
+                    case .openImmersiveSpace(let id):
+                        Task {
+                            await openImmersiveSpace(id: id)
+                        }
+                    case .openWindow(let id):
+                        openWindow(id: id)
+                    case .closeImmersiveSpace:
+                        Task {
+                            await dismissImmersiveSpace()
+                        }
+                    case .closeWindow(let id):
+                        dismissWindow(id: id)
+                    case .none:
+                        break
+                    }
+                }
         }
         .windowStyle(.plain)
 
@@ -28,6 +48,7 @@ struct IIIFVisionARApp: App {
 
         ImmersiveSpace(id: "SingleImage") {
             SingleImageRealityView(entityObject: SingleImageEntity(width: 2.261, height: 2.309, imageURL: Bundle.main.url(forResource: "Hollywood", withExtension: "jpg")!))
+                .environment(appState)
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
         
@@ -38,6 +59,7 @@ struct IIIFVisionARApp: App {
                 CompoundImageVolumetric(entityObject: CompoundImageEntity(width: iiifItem.width,
                                                                           height: iiifItem.height,
                                                                           imageURLPairs: iiifItem.urls.buildPagePairs()))
+                .environment(appState)
             }
         }
         .windowStyle(.volumetric)
@@ -48,6 +70,7 @@ struct IIIFVisionARApp: App {
                 CompoundImageRealityView(entityObject: CompoundImageEntity(width: iiifItem.width,
                                                                            height: iiifItem.height,
                                                                            imageURLPairs: iiifItem.urls.buildPagePairs()))
+                .environment(appState)
             }
         }
         .immersionStyle(selection: .constant(.mixed), in: .mixed)
@@ -58,4 +81,10 @@ struct IIIFVisionARApp: App {
         RotationComponent.registerComponent()
         RotationSystem.registerSystem()
     }
+
+    @State private var appState = AppState()
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
 }
