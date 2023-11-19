@@ -50,8 +50,11 @@ public final class CompoundImageEntity: Entity {
         super.init()
 
         self.name = UUID().uuidString   // Setup for unique identifier for RotationSystem
-        let bounds = self.visualBounds(relativeTo: nil).extents
-        self.components.set(CollisionComponent(shapes: [.generateBox(size: bounds)]))
+        
+        // Box Width = width * 2 (two pages)
+        // Box Height = width (For page rotation)
+        // Box Depth = height
+        self.components.set(CollisionComponent(shapes: [.generateBox(size: .init(width * 2, width, height))]))
 
         #if os(visionOS) // Progma Mark for visionOS https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
         self.components.set(InputTargetComponent())
