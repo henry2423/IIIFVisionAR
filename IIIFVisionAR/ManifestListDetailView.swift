@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ManifestContentView: View {
+struct ManifestListDetailView: View {
     let iiifItem: IIIFItem
 
     var body: some View {
@@ -38,7 +38,7 @@ struct ManifestContentView: View {
 }
 
 #Preview {
-    ManifestContentView(iiifItem: IIIFItem(itemName: "Love",
+    ManifestListDetailView(iiifItem: IIIFItem(itemName: "Love",
                                            width: 1.105,
                                            height: 1.418,
                                            urls: [
