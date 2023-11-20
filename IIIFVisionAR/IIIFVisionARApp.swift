@@ -60,9 +60,12 @@ struct IIIFVisionARApp: App {
 
         WindowGroup(id: "CompoundImageVolume", for: IIIFItem.self) { $iiifItem in
             if let iiifItem {
+                let zOffset = (2 - iiifItem.height) / 2
                 CompoundImageVolumetric(entityObject: CompoundImageEntity(width: iiifItem.width,
                                                                           height: iiifItem.height,
-                                                                          imageURLPairs: iiifItem.urls.buildPagePairs()))
+                                                                          imageURLPairs: iiifItem.urls.buildPagePairs()),
+                                        yOffset: -0.8, // To put the object in the middle height of the box
+                                        zOffset: zOffset) // To put the object in the middle depth of the box
                 .environment(appState)
             }
         }

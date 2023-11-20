@@ -11,11 +11,13 @@ import IIIFImageEntity
 
 struct CompoundImageVolumetric: View {
     let entityObject: CompoundImageEntity
+    let yOffset: Float
+    let zOffset: Float
 
     var body: some View {
         RealityView { content in
             try? await entityObject.loadInitialResource()
-            entityObject.transform.translation = .init(x: 0, y: -0.8, z: 0)
+            entityObject.transform.translation = .init(x: 0, y: yOffset, z: zOffset)
             content.add(entityObject)
         }
         .gesture(DragGesture()
