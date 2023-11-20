@@ -31,7 +31,12 @@ struct CompoundImageVolumetric: View {
                 }
             }
         )
+        .onDisappear {
+            appState.closeIIIFItem()
+        }
     }
+
+    @Environment(AppState.self) private var appState
 }
 
 extension VerticalAlignment {
