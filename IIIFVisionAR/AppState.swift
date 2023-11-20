@@ -29,7 +29,7 @@ final class AppState {
         if iiifItem.urls.count == 1 {
             viewState = .openImmersiveSpace(id: "SingleImage", iiifItem: iiifItem)
         }
-        // Show CompoundImageView in Volumetric if < 2x2
+        // Show CompoundImageView in Volumetric if < 1x2 (The actual box width = iiifItem.width * 2 (Two page presented at the same time))
         else if iiifItem.width <= 1 && iiifItem.height <= 2 {
             viewState = .openWindow(id: "CompoundImageVolume", iiifItem: iiifItem)
         }
