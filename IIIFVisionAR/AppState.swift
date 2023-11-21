@@ -19,7 +19,7 @@ final class AppState {
         case none
     }
 
-    private(set) var viewState = IIIFViewState.none
+    private(set) var iiifViewState = IIIFViewState.none
 
     func openIIIFItem(_ iiifItem: IIIFItem) {
         // Close iiifItem if needed
@@ -27,24 +27,24 @@ final class AppState {
 
         // Show SingleImageView if only one url
         if iiifItem.urls.count == 1 {
-            viewState = .openImmersiveSpace(id: "SingleImage", iiifItem: iiifItem)
+            iiifViewState = .openImmersiveSpace(id: "SingleImage", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Volumetric if < 1x2 (The actual box width = iiifItem.width * 2 (Two page presented at the same time))
         else if iiifItem.width <= 1 && iiifItem.height <= 2 {
-            viewState = .openWindow(id: "CompoundImageVolume", iiifItem: iiifItem)
+            iiifViewState = .openWindow(id: "CompoundImageVolume", iiifItem: iiifItem)
         }
         // Show CompoundImageView in Immersive Space if > 2x2x2
         else {
-            viewState = .openImmersiveSpace(id: "CompoundImage", iiifItem: iiifItem)
+            iiifViewState = .openImmersiveSpace(id: "CompoundImage", iiifItem: iiifItem)
         }
     }
 
     func closeIIIFItem() {
-        switch viewState {
+        switch iiifViewState {
         case .openImmersiveSpace(let id, _):
-            viewState = .closeImmersiveSpace(id: id)
+            iiifViewState = .closeImmersiveSpace(id: id)
         case .openWindow(let id, _):
-            viewState = .closeWindow(id: id)
+            iiifViewState = .closeWindow(id: id)
         case .closeImmersiveSpace, .closeWindow, .none:
             break
         }

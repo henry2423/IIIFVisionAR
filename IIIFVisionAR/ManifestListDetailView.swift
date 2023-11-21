@@ -23,7 +23,7 @@ struct ManifestListDetailView: View {
             appState.openIIIFItem(iiifItem)
         }
         // Navigate back to previous page if IIIF Viewer closed
-        .onChange(of: appState.viewState) { _, viewState in
+        .onChange(of: appState.iiifViewState) { _, viewState in
             switch viewState {
             case .closeWindow, .closeImmersiveSpace:
                 presentationMode.wrappedValue.dismiss()

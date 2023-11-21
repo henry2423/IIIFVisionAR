@@ -23,7 +23,7 @@ struct IIIFVisionARApp: App {
             ManifestListView()
                 .environment(appState)
                 // Call ImmersiveSpace/Window system call when viewState changed
-                .onChange(of: appState.viewState) { _, viewState in
+                .onChange(of: appState.iiifViewState) { _, viewState in
                     switch viewState {
                     case .openImmersiveSpace(let id, let iiifItem):
                         Task { @MainActor in
