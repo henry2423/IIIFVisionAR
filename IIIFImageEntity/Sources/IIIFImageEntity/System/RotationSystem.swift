@@ -28,7 +28,7 @@ public struct RotationSystem: System {
     public init(scene: RealityKit.Scene) {}
 
     public func update(context: SceneUpdateContext) {
-        for entity in context.scene.performQuery(Self.query) {
+        for entity in context.entities(matching: Self.query, updatingSystemWhen: .rendering) {
             guard let component: RotationComponent = entity.components[RotationComponent.self] else { continue }
 
             guard abs(entity.orientation.angle.distance(to: component.targetAngle)) > 0.05 else {
